@@ -2,6 +2,7 @@
 from datetime import datetime
 import serial
 
+from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
 
 # sensor name mapping
 sensor_map = {
@@ -12,7 +13,30 @@ sensor_map = {
 
 DEVICE = '/dev/ttyS0'
  
+database = 'sqlite:///home_observe.db'
+
+
+def get_database():
+    db = create_engine(database)
+    metadata = MetaData(db)
+    log = Table('log', metadata,
+                Column('sensor_id', Integer, primary_key=True),
+                Column('sensor_name', String),
+                Column('timestamp', DateTime, primary_key=True),
+                Column('temperature', Float),
+                Column('humidity', Float),
+                )
+    try:
+        log.create()
+    except OperationalError:
+        # import traceback
+        # traceback.print_exc()
+        pass
+    return log
+
+
 def main():
+    log = get_database()
     while(True):
         ser = serial.Serial(DEVICE, 9600)
         line = ser.readline().strip()
@@ -27,8 +51,14 @@ def main():
             print('invalid input')
             continue
         sensor = sensor_map.get(value_dict['ID'], 'DeviceID' + value_dict['ID'])
-        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print('%s: Sensor: %s, Temperature: %s, Humidity: %s' % (now, sensor, value_dict['TC'], value_dict['RH']))
+        now = datetime.utcnow()
+        print('%s: Sensor: %s, Temperature: %s, Humidity: %s' %
+            (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict['TC'], value_dict['RH']))
+        insert = log.insert()
+        insert.execute(sendor_id=int(value_dict['ID']), sensor_name=sensor,
+                       timestamp=now, temperature=float(value_dict['TC']),
+                       humidity=float(value_dict['RH'].strip('%'))
+                      )
 
 if __name__ == '__main__':
     main()
