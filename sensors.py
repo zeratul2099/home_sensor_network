@@ -14,13 +14,13 @@ sensor_map = {
 
 DEVICE = '/dev/ttyS0'
  
-database = 'sqlite:///home_observe.db'
+database = 'sqlite:///sensor_log.db'
 
 
 def get_database():
     db = create_engine(database)
     metadata = MetaData(db)
-    log = Table('log', metadata,
+    log = Table('sensor_log', metadata,
                 Column('sensor_id', Integer, primary_key=True),
                 Column('sensor_name', String),
                 Column('timestamp', DateTime, primary_key=True),
