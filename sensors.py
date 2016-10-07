@@ -3,6 +3,7 @@ from datetime import datetime
 import serial
 
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
+from sqlalchemy.exc import OperationalError
 
 # sensor name mapping
 sensor_map = {
@@ -55,7 +56,7 @@ def main():
         print('%s: Sensor: %s, Temperature: %s, Humidity: %s' %
             (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict['TC'], value_dict['RH']))
         insert = log.insert()
-        insert.execute(sendor_id=int(value_dict['ID']), sensor_name=sensor,
+        insert.execute(sensor_id=int(value_dict['ID']), sensor_name=sensor,
                        timestamp=now, temperature=float(value_dict['TC']),
                        humidity=float(value_dict['RH'].strip('%'))
                       )
