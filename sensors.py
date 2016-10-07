@@ -26,7 +26,8 @@ def main():
             print('invalid input')
             continue
         sensor = sensor_map.get(value_dict['ID'], 'DeviceID' + value_dict['ID'])
-        print('Sensor: %s, Temperature: %s, Humidity: %s' % (sensor, value_dict['TC'], value_dict['RH']))
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print('%s: Sensor: %s, Temperature: %s, Humidity: %s' % (now, sensor, value_dict['TC'], value_dict['RH']))
 
 if __name__ == '__main__':
     main()
