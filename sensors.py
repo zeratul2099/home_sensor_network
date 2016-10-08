@@ -14,7 +14,6 @@ def main():
         ser = serial.Serial(device, 9600)
         line = ser.readline().strip()
         print('Received input: ' + line)
-        splitList=line.split(":")
         keys = line.split(':')[0::2]
         values = line.split(':')[1::2]
         value_dict = dict(zip(keys, values))
