@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
 from sqlalchemy.exc import OperationalError
 
+from settings import database
+
 def get_database():
     db = create_engine(database)
     metadata = MetaData(db)

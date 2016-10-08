@@ -3,7 +3,7 @@ from datetime import datetime
 import serial
 
 from common import get_database
-from settings import device, database, sensor_map
+from settings import device, sensor_map
 
 
 
