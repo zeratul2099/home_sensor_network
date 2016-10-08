@@ -1,6 +1,6 @@
 import pytz
 from flask import Flask, url_for, render_template, request
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, select as select_stm
 from common import get_database
 app = Flask(__name__)
 
@@ -16,11 +16,12 @@ def main(sensor_id=None):
     log = get_database()
     select = log.select().order_by(desc(log.c.timestamp))
     count = log.select()
+    count = select_stm([func.count()]).select_from(log)
     if sensor_id:
         select = select.where(log.c.sensor_id==int(filter_sensor_id))
         count = count.where(log.c.sensor_id==int(filter_sensor_id))
     if page != 'all':
-        count = count.count().execute().fetchone()[0]
+        count = count.execute().fetchone()[0]
         maxpages = count // pagesize
         select = select.limit(pagesize)
         select = select.offset(int(page) * pagesize)

@@ -15,7 +15,7 @@ def get_database():
                 )
     try:
         log.create()
-    except OperationalError, InternalError:
+    except (OperationalError, InternalError):
         # import traceback
         # traceback.print_exc()
         pass
