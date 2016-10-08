@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+        <title>Temperature and Humidity WebLog</title>
+    </head>
+    <body>
+        <div id='content_container' class='content'>
+        {% if sensor_id %}<h3>{{ sensor_idx }}</h3>
+        <h4><a href='..?page=0'>back</a></h4>
+        {% else %}
+        <h3>Overview</h3>
+        {% endif %}
+            <h4 style='text-align: center'>
+            {% if page != 'all' %}
+                {% if page != '0' %}<a href='?page={{ page|int - 1 }}'>prev</a>{% else %}prev{% endif %}
+            {{ page|int + 1 }}
+                {% if page|int < maxpages %}<a href='?page={{ page|int + 1 }}'>next</a>{% else %}next{% endif %}
+            {% endif %}
+            </h4>
+            <table>
+                <tr class='tablehdr'>
+                    <th>SensorId</th><th>Location</th><th>Timestamp</th><th>Temperature</th><th>Humidity</th>
+                </tr>
+            {% for entry in result %}
+                <tr>
+                    <td><a href='{{ entry.sensor_id }}?page=0'>{{ entry.sensor_id }}</a></td>
+                    <td>{{ entry.sensor_name }}</td>
+                    <td>{{ entry.timestamp }}</td>
+                    <td>{{ entry.temperature }}</td>
+                    <td>{{ entry.humidity }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            <h4 style='text-align: center'>
+            {% if page != 'all' %}
+                {% if page != '0' %}<a href='?page={{ page|int - 1 }}'>prev</a>{% else %}prev{% endif %}
+            {{ page|int + 1 }}
+                {% if page|int < maxpages %}<a href='?page={{ page|int + 1 }}'>next</a>{% else %}next{% endif %}
+            {% endif %}
+            </h4>
+        </div>
+    </body>
+</html>
