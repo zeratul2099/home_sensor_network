@@ -5,16 +5,7 @@ import serial
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
 from sqlalchemy.exc import OperationalError
 
-# sensor name mapping
-sensor_map = {
-    '1': 'Sensor 1',
-    '2': 'Sensor 2',
-    '3': 'Sensor 3',
-}
-
-DEVICE = '/dev/ttyS0'
- 
-database = 'sqlite:///sensor_log.db'
+from settings import device, database, sensor_map
 
 
 def get_database():
@@ -39,7 +30,7 @@ def get_database():
 def main():
     log = get_database()
     while(True):
-        ser = serial.Serial(DEVICE, 9600)
+        ser = serial.Serial(device, 9600)
         line = ser.readline().strip()
         print('Received input: ' + line)
         splitList=line.split(":")
