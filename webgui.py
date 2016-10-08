@@ -1,8 +1,7 @@
 import pytz
 from flask import Flask, url_for, render_template, request
 from sqlalchemy import desc, func, select as select_stm
-from common import get_database
-from settings import sensor_map
+from common import get_database, get_sensor_name
 app = Flask(__name__)
 
 
