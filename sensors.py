@@ -2,7 +2,7 @@
 from datetime import datetime
 import serial
 
-from common import get_database
+from common import get_database, get_sensor_name
 from settings import device, sensor_map
 
 
@@ -23,7 +23,7 @@ def main():
         except AssertionError:
             print('invalid input')
             continue
-        sensor = sensor_map.get(value_dict['ID'], 'DeviceID' + value_dict['ID'])
+        sensor = get_sensor_name(value_dict['ID'])
         now = datetime.utcnow()
         print('%s: Sensor: %s, Temperature: %s, Humidity: %s' %
             (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict['TC'], value_dict['RH']))

@@ -2,6 +2,7 @@ import pytz
 from flask import Flask, url_for, render_template, request
 from sqlalchemy import desc, func, select as select_stm
 from common import get_database
+from settings import sensor_map
 app = Flask(__name__)
 
 
@@ -38,7 +39,8 @@ def main(filter_sensor_id=None):
             humidity = row.humidity,
         )
         result.append(entry)
-    return render_template('webgui.html', result=result, sensor_id=filter_sensor_id, page=page, maxpages=maxpages)
+    return render_template('webgui.html', result=result, sensor_name=get_sensor_name(filter_sensor_id),
+                           page=page, maxpages=maxpages)
 
 
 with app.test_request_context():

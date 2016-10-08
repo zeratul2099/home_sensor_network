@@ -1,7 +1,11 @@
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
 from sqlalchemy.exc import OperationalError, InternalError
 
-from settings import database
+from settings import database, sensor_map
+
+
+def get_sensor_name(sensor_id):
+    return sensor_map.get(sensor_id, 'DeviceID' + sensor_id)
 
 def get_database():
     db = create_engine(database)
