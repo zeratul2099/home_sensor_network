@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, InternalError
 
 from settings import database
 
@@ -15,7 +15,7 @@ def get_database():
                 )
     try:
         log.create()
-    except OperationalError:
+    except OperationalError, InternalError:
         # import traceback
         # traceback.print_exc()
         pass
