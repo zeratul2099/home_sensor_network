@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 @app.route('/<filter_sensor_id>')
-def main(sensor_id=None):
+def main(filter_sensor_id=None):
     page = request.args.get('page')
     if page is None:
         page = '0'
@@ -17,7 +17,7 @@ def main(sensor_id=None):
     select = log.select().order_by(desc(log.c.timestamp))
     count = log.select()
     count = select_stm([func.count()]).select_from(log)
-    if sensor_id:
+    if filter_sensor_id:
         select = select.where(log.c.sensor_id==int(filter_sensor_id))
         count = count.where(log.c.sensor_id==int(filter_sensor_id))
     if page != 'all':
@@ -38,7 +38,7 @@ def main(sensor_id=None):
             humidity = row.humidity,
         )
         result.append(entry)
-    return render_template('webgui.html', result=result, hostname=filter_sensor_id, page=page, maxpages=maxpages)
+    return render_template('webgui.html', result=result, sensor_id=filter_sensor_id, page=page, maxpages=maxpages)
 
 
 with app.test_request_context():
