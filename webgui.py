@@ -30,8 +30,8 @@ def main(sensor_id=None):
     result = list()
     for row in rows.fetchall():
         entry = dict(
-            sensor_id = row.sensor_id
-            sensor_name = row.sensor_name
+            sensor_id = row.sensor_id,
+            sensor_name = row.sensor_name,
             timestamp = pytz.utc.localize(row.timestamp).astimezone(cet).strftime('%d.%m.%Y %H:%M:%S'),
             temperature = row.temperature,
             humidity = row.humidity,
