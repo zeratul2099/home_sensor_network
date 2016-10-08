@@ -6,13 +6,12 @@ from common import get_database, get_sensor_name
 from settings import device
 
 
-
-
 def main():
+    print('Listening to %s...' % device)
     log = get_database()
     while(True):
         ser = serial.Serial(device, 9600)
-        line = ser.readline().strip()
+        line = ser.readline().decode('utf8').strip()
         print('Received input: ' + line)
         keys = line.split(':')[0::2]
         values = line.split(':')[1::2]
@@ -31,6 +30,7 @@ def main():
                        timestamp=now, temperature=float(value_dict['TC']),
                        humidity=float(value_dict['RH'].strip('%'))
                       )
+
 
 if __name__ == '__main__':
     main()
