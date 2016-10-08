@@ -5,7 +5,10 @@ from settings import database, sensor_map
 
 
 def get_sensor_name(sensor_id):
-    return sensor_map.get(sensor_id, 'DeviceID' + sensor_id)
+    if sensor_id:
+        return sensor_map.get(sensor_id, 'DeviceID' + sensor_id)
+    else:
+        return None
 
 def get_database():
     db = create_engine(database)
