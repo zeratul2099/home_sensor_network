@@ -11,7 +11,7 @@ def get_sensor_name(sensor_id):
         return None
 
 def get_database():
-    db = create_engine(database)
+    db = create_engine(database, pool_recycle=6*3600)
     metadata = MetaData(db)
     log = Table('sensor_log', metadata,
                 Column('sensor_id', Integer, primary_key=True),
