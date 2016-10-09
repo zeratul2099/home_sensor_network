@@ -7,10 +7,12 @@ https://computers.tutsplus.com/tutorials/building-a-wireless-sensor-network-in-y
 As opposed to the original code, this one stores the sensor values in a local database.
 
 Dependencies:
- - python
+ - python3
  - sqlalchemy
+ - flask
 
 Upcoming features:
  - web interface/api
  - plots
- - python 3
+ - outside weather condition
+
