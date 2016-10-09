@@ -42,6 +42,12 @@ def main(filter_sensor_id=None):
                            page=page, maxpages=maxpages)
 
 
+
+@app.route('/plots')
+def plots():
+    return render_template('plots.html')
+
+
 with app.test_request_context():
     url_for('static', filename='styles.css')
 
