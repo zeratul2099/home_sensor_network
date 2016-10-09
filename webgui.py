@@ -1,7 +1,10 @@
+from datetime import datetime, timedelta
+
 import pytz
 from flask import Flask, url_for, render_template, request
 from sqlalchemy import desc, func, select as select_stm
 from common import get_database, get_sensor_name
+from settings import sensor_map
 app = Flask(__name__)
 
 
@@ -45,7 +48,18 @@ def main(filter_sensor_id=None):
 
 @app.route('/plots')
 def plots():
-    return render_template('plots.html')
+    log = get_database()
+    cet = pytz.timezone('CET')
+    now = datetime.utcnow()
+    temperatures = dict()
+    humidities = dict()
+    for sensor_id in sensor_map:
+        query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=2))
+        for row in query.execute().fetchall():
+            timestamp = pytz.utc.localize(row.timestamp).astimezone(cet).strftime('%Y-%m-%d %H:%M')
+            temperatures.setdefault(sensor_id, list()).append([timestamp, row.temperature])
+            humidities.setdefault(sensor_id, list()).append([timestamp, row.humidity])
+    return render_template('plots.html', temperatures=temperatures, humidities=humidities)
 
 
 with app.test_request_context():
