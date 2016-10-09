@@ -11,6 +11,11 @@ Dependencies:
  - sqlalchemy
  - flask
 
+External libraries:
+ - jquery: https://jquery.org/license
+ - jqplot: https://jqplot.com/info.php
+
+
 Upcoming features:
  - web interface/api
  - plots
