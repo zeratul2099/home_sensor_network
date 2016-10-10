@@ -10,6 +10,7 @@ Dependencies:
  - python3
  - sqlalchemy
  - flask
+ - pytz
 
 External libraries:
  - jquery: https://jquery.org/license
@@ -17,7 +18,7 @@ External libraries:
 
 
 Upcoming features:
- - web interface/api
- - plots
+ - ajax-plots
+ - gauge
  - outside weather condition
 
