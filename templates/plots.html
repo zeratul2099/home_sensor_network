@@ -8,6 +8,7 @@
         <script class="include" type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.js"></script>
         <script class="include" type="text/javascript" src="/static/plugins/jqplot.cursor.js"></script>
         <script class="include" type="text/javascript" src="/static/plugins/jqplot.highlighter.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.enhancedLegendRenderer.js"></script>
         <title>Temperature and Humidity WebLog</title>
     </head>
     <body>
@@ -32,7 +33,11 @@ $(document).ready(function () {
                 show: true
             },
             legend: {
-                show: true
+                show: true,
+                renderer: $.jqplot.EnhancedLegendRenderer,
+                rendererOptions: {
+                    seriesToggle: 'normal'
+                }
             },
             axes:{
                 xaxis:{
