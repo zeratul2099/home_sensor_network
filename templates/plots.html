@@ -6,6 +6,8 @@
         <script class="include" type="text/javascript" src="/static/jquery.min.js"></script>
         <script class="include" type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
         <script class="include" type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.cursor.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.highlighter.js"></script>
         <title>Temperature and Humidity WebLog</title>
     </head>
     <body>
@@ -23,7 +25,7 @@ $(document).ready(function () {
             show: true,
             zoom: true,
             looseZoom: true,
-            showTooltip: false
+            showTooltip: true
         },
         axes:{
             xaxis:{

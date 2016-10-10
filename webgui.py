@@ -54,7 +54,7 @@ def plots():
     temperatures = dict()
     humidities = dict()
     for sensor_id in sensor_map:
-        query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=2))
+        query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():
             timestamp = pytz.utc.localize(row.timestamp).astimezone(cet).strftime('%Y-%m-%d %H:%M')
             temperatures.setdefault(sensor_id, list()).append([timestamp, row.temperature])
