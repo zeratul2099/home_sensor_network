@@ -41,35 +41,18 @@ $(document).ready(function () {
                 },
             seriesDefaults: {
                 showMarker: false,
-            }
+            },
             series:[
+            {% for sensor_id in plot_data %}
+                {
+                    label: {{ sensor_map[sensor_id] }}
+                }
+            {% endfor %}
             ]
+            
             }
         );
     {% endfor %}
-{#
-    {% for sensor_id, h_tuples in humidities.items() %}
-        var s{{ sensor_id }} = {{ h_tuples|safe }};
-    {% endfor %}
-    plot1 = $.jqplot("hum_chart", [{% for sensor_id in humidities %}s{{ sensor_id }},{% endfor %}], {
-        // Turns on animatino for all series in this plot.
-        animate: true,
-        // Will animate plot on calls to plot1.replot({resetAxes:true})
-        animateReplot: true,
-        cursor: {
-            show: true,
-            zoom: true,
-            looseZoom: true,
-            showTooltip: false
-        },
-        axes:{
-            xaxis:{
-                renderer:$.jqplot.DateAxisRenderer
-                }
-            },
-        series:[]
-		}
-	) #}
 	})
 		</script>
         <div id='content_container' class='content'>
