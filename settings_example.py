@@ -11,4 +11,5 @@ sensor_map = {
     '3': 'Sensor 3',
 }
 
-
+# timezone shown in webgui
+timezone = 'CET'

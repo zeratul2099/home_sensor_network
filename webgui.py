@@ -4,7 +4,7 @@ import pytz
 from flask import Flask, url_for, render_template, request
 from sqlalchemy import desc, func, select as select_stm
 from common import get_database, get_sensor_name
-from settings import sensor_map
+from settings import sensor_map, timezone
 app = Flask(__name__)
 
 
@@ -15,7 +15,7 @@ def main(filter_sensor_id=None):
     if page is None:
         page = '0'
     pagesize = 50
-    cet = pytz.timezone('CET')
+    tz = pytz.timezone(timezone)
     log = get_database()
     select = log.select().order_by(desc(log.c.timestamp))
     count = log.select()
@@ -36,7 +36,7 @@ def main(filter_sensor_id=None):
         entry = dict(
             sensor_id = row.sensor_id,
             sensor_name = row.sensor_name,
-            timestamp = pytz.utc.localize(row.timestamp).astimezone(cet).strftime('%d.%m.%Y %H:%M:%S'),
+            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%d.%m.%Y %H:%M:%S'),
             temperature = row.temperature,
             humidity = row.humidity,
         )
@@ -49,14 +49,14 @@ def main(filter_sensor_id=None):
 @app.route('/plots')
 def plots():
     log = get_database()
-    cet = pytz.timezone('CET')
+    tz = pytz.timezone(timezone)
     now = datetime.utcnow()
     temperatures = dict()
     humidities = dict()
     for sensor_id in sensor_map:
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():
-            timestamp = pytz.utc.localize(row.timestamp).astimezone(cet).strftime('%Y-%m-%d %H:%M')
+            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
             temperatures.setdefault(sensor_id, list()).append([timestamp, row.temperature])
             humidities.setdefault(sensor_id, list()).append([timestamp, row.humidity])
     return render_template('plots.html', temperatures=temperatures, humidities=humidities, sensor_map=sensor_map)
