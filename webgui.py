@@ -41,7 +41,7 @@ def main(filter_sensor_id=None):
             humidity = row.humidity,
         )
         result.append(entry)
-    return render_template('webgui.html', result=result, sensor_name=get_sensor_name(filter_sensor_id),
+    return render_template('table.html', result=result, sensor_name=get_sensor_name(filter_sensor_id),
                            page=page, maxpages=maxpages)
 
 
