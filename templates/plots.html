@@ -15,10 +15,10 @@
 		<script type='text/javascript'>
 $(document).ready(function () {
     {% for plot_data in [temperatures, humidities ] %}
-        {% for sensor_id, tuples in plot_data.items() %}
+        {% for sensor_id, tuples in plot_data %}
             var s{{ sensor_id }} = {{ tuples|safe }};
         {% endfor %}
-        plot{{ loop.index }} = $.jqplot("chart{{ loop.index }}", [{% for sensor_id in plot_data %}s{{ sensor_id }},{% endfor %}], {
+        plot{{ loop.index }} = $.jqplot("chart{{ loop.index }}", [{% for sensor_id, tuples  in plot_data %}s{{ sensor_id }},{% endfor %}], {
             // Turns on animatino for all series in this plot.
             animate: true,
             // Will animate plot on calls to plot1.replot({resetAxes:true})
@@ -48,7 +48,7 @@ $(document).ready(function () {
                 showMarker: false,
             },
             series:[
-            {% for sensor_id in plot_data %}
+            {% for sensor_id, tuples in plot_data %}
                 {
                     label: '{{ sensor_map[sensor_id] }}'
                 },
