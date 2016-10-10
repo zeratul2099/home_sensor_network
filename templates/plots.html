@@ -45,9 +45,9 @@ $(document).ready(function () {
             series:[
             {% for sensor_id in plot_data %}
                 {
-                    label: {{ sensor_map[sensor_id] }}
-                }
-            {% endfor %}
+                    label: '{{ sensor_map[sensor_id] }}'
+                },
+            {%- endfor %}
             ]
             
             }
