@@ -59,7 +59,7 @@ def plots():
             timestamp = pytz.utc.localize(row.timestamp).astimezone(cet).strftime('%Y-%m-%d %H:%M')
             temperatures.setdefault(sensor_id, list()).append([timestamp, row.temperature])
             humidities.setdefault(sensor_id, list()).append([timestamp, row.humidity])
-    return render_template('plots.html', temperatures=temperatures, humidities=humidities)
+    return render_template('plots.html', temperatures=temperatures, humidities=humidities, sensor_map=sensor_map)
 
 
 with app.test_request_context():

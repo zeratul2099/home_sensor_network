@@ -13,35 +13,41 @@
     <body>
 		<script type='text/javascript'>
 $(document).ready(function () {
-    {% for sensor_id, t_tuples in temperatures.items() %}
-        var s{{ sensor_id }} = {{ t_tuples|safe }};
-    {% endfor %}
-    plot1 = $.jqplot("temp_chart", [{% for sensor_id in temperatures %}s{{ sensor_id }},{% endfor %}], {
-        // Turns on animatino for all series in this plot.
-        animate: true,
-        // Will animate plot on calls to plot1.replot({resetAxes:true})
-        animateReplot: true,
-        cursor: {
-            show: true,
-            zoom: true,
-            looseZoom: true,
-            showTooltip: false
-        },
-        highlighter: {
-            show: true
-        },
-        legend: {
-            show: true
-        },
-        axes:{
-            xaxis:{
-                renderer:$.jqplot.DateAxisRenderer
-                }
+    {% for plot_data in [temperatures, humidities ] %}
+        {% for sensor_id, tuples in plot_data.items() %}
+            var s{{ sensor_id }} = {{ tuples|safe }};
+        {% endfor %}
+        plot{{ loop.index }} = $.jqplot("chart{{ loop.index }}", [{% for sensor_id in plot_data %}s{{ sensor_id }},{% endfor %}], {
+            // Turns on animatino for all series in this plot.
+            animate: true,
+            // Will animate plot on calls to plot1.replot({resetAxes:true})
+            animateReplot: true,
+            cursor: {
+                show: true,
+                zoom: true,
+                looseZoom: true,
+                showTooltip: false
             },
-        series:[]
-		}
-	);
-    
+            highlighter: {
+                show: true
+            },
+            legend: {
+                show: true
+            },
+            axes:{
+                xaxis:{
+                    renderer:$.jqplot.DateAxisRenderer
+                    }
+                },
+            seriesDefaults: {
+                showMarker: false,
+            }
+            series:[
+            ]
+            }
+        );
+    {% endfor %}
+{#
     {% for sensor_id, h_tuples in humidities.items() %}
         var s{{ sensor_id }} = {{ h_tuples|safe }};
     {% endfor %}
@@ -63,7 +69,7 @@ $(document).ready(function () {
             },
         series:[]
 		}
-	)
+	) #}
 	})
 		</script>
         <div id='content_container' class='content'>
@@ -71,11 +77,11 @@ $(document).ready(function () {
             <h4 style='text-align: center'>
                 Temperature
             </h4>
-			<div id='temp_chart'></div>
+			<div id='chart1'></div>
             <h4 style='text-align: center'>
                 Relative Humidity
             </h4>
-			<div id='hum_chart'></div>
+			<div id='chart2'></div>
         </div>
     </body>
 </html>
