@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 import pytz
-from flask import Flask, url_for, render_template, request
+from flask import Flask, url_for, render_template, request, abort
 from sqlalchemy import desc, func, select as select_stm
 from common import get_database, get_sensor_name
 from settings import sensor_map, timezone
@@ -80,6 +80,10 @@ def gauges():
     return render_template('gauges.html', temperatures=temperatures,
                            humidities=humidities, sensor_map=sensor_map)
 
+
+@app.route('/favicon.ico')
+def favicon():
+    abort(404)    
 
 
 with app.test_request_context():
