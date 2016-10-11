@@ -18,14 +18,16 @@ $(document).ready(function () {
         {% set outer_index = loop.index %}
         {% for sensor_id, timestamp, tuples in plot_data %}
             var s{{ sensor_id }} = {{ tuples|safe }};
-        plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [{% for sensor_id, tuples  in plot_data %}s{{ sensor_id }},{% endfor %}], {
+        plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [s{{ sensor_id }}], {
             title: '{{ sensor_map[sensor_id] }}',
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
-                rerdererOptions: {
-                    label: '{{ timestamp }}'
+                rendererOptions: {
+                    label: '{{ timestamp }}',
                     min: 0,
-                    max: {% if outer_index == 0 %}50{% else %}100{% endif %},
+                    max: {% if outer_index == 1 %}50{% else %}100{% endif %},
+                    intervals: {% if outer_index == 1 %}[15, 25, 40, 50]{% else %}[40, 60, 100]{% endif %},
+                    intervalColors: {% if outer_index == 1 %}['blue', 'green', 'yellow', 'red']{% else %}['yellow', 'green', 'yellow']{% endif %},
                 }
             },
             

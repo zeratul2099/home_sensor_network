@@ -68,14 +68,13 @@ def gauges():
     log = get_database()
     tz = pytz.timezone(timezone)
     now = datetime.utcnow()
-    temperatures = dict()
+    temperatures = list()
     humidities = list()
-    timestamps = list()
     for sensor_id, _ in sorted(sensor_map.items()):
         query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
-        row = query.exrcute().fetchall()[0]
+        row = query.execute().fetchall()[0]
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-        teperatures.append((sensor_id, timestamp, [row.temperature]))
+        temperatures.append((sensor_id, timestamp, [row.temperature]))
         humidities.append((sensor_id, timestamp, [row.humidity]))
 
     return render_template('gauges.html', temperatures=temperatures,
