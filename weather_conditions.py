@@ -12,9 +12,8 @@ def main():
     url = url % (darksky_api_key, lat_lon[0], lat_lon[1])
     response = requests.get(url)
     result = response.json()
-    tz = pytz.timezone(result['timezone'])
     current_conditions = result['currently']
-    timestamp = tz.localize(datetime.fromtimestamp(current_conditions['time'])).astimezone(pytz.utc)
+    timestamp = datetime.utcfromtimestamp(current_conditions['time'])
     temperature = current_conditions['temperature']
     humidity = current_conditions['humidity'] * 100.0
     print(timestamp, temperature, humidity)
