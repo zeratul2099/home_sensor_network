@@ -25,6 +25,6 @@ External libraries:
 
 Upcoming features:
  - ajax-plots
- - gauge
+ - don't load whole database on table view
  - outside weather condition
 
