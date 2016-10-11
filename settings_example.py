@@ -18,4 +18,4 @@ timezone = 'CET'
 darksky_api_key = None
 
 # your location
-lat_lon (50.0, 10.0)
+lat_lon = (50.0, 10.0)
