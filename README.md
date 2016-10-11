@@ -11,6 +11,7 @@ Dependencies:
  - sqlalchemy
  - flask
  - pytz
+ - requests
 
 External libraries:
  - jquery: https://jquery.org/license

@@ -13,3 +13,9 @@ sensor_map = {
 
 # timezone shown in webgui
 timezone = 'CET'
+
+# darksky api key for outside temperature
+darksky_api_key = None
+
+# your location
+lat_lon (50.0, 10.0)
