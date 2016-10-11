@@ -24,10 +24,11 @@ $(document).ready(function () {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
                     label: '{{ timestamp }}',
+                    labelPosition: 'bottom',
                     min: 0,
                     max: {% if outer_index == 1 %}50{% else %}100{% endif %},
                     intervals: {% if outer_index == 1 %}[15, 25, 40, 50]{% else %}[40, 60, 100]{% endif %},
-                    intervalColors: {% if outer_index == 1 %}['blue', 'green', 'yellow', 'red']{% else %}['yellow', 'green', 'yellow']{% endif %},
+                    intervalColors: {% if outer_index == 1 %}['#268bd2', '#859900', '#c59900', '#dc322f']{% else %}['#c59900', '#859900', '#c59900']{% endif %},
                 }
             },
             
@@ -38,7 +39,7 @@ $(document).ready(function () {
 	})
 		</script>
         <div id='content_container' class='content'>
-        <h3>Plots</h3>
+        <h3>Gauges</h3>
         <h4><a href='..'>back</a></h4>
             <h4 style='text-align: center'>
                 Temperature

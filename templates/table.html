@@ -9,10 +9,11 @@
         {% if sensor_name %}<h3>{{ sensor_name }}</h3>
         <h4><a href='..?page=0'>back</a></h4>
         {% else %}
-        <h3>Overview</h3>
+        <h3>Table</h3>
         {% endif %}
             <h4 style='text-align: center'>
-            <div><a href='/plots'>Plots</a></div>
+            <div><a href='/plots'>Plots</a>
+            <a href='/gauges'>Gauges</a></div>
             {% if page != 'all' %}
                 {% if page != '0' %}<a href='?page={{ page|int - 1 }}'>prev</a>{% else %}prev{% endif %}
             {{ page|int + 1 }}
