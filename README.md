@@ -6,6 +6,9 @@ https://computers.tutsplus.com/tutorials/building-a-wireless-sensor-network-in-y
 
 As opposed to the original code, this one stores the sensor values in a local database.
 
+Optionally you can collect outside temperature and humidity for you location via the Darksky-API (https://darksky.net). You need
+to get an Darksky-API-Key and enter it with your geolocation in the settings and then let weather_condition.py run per crontab (e.g. \*/15)
+
 Dependencies:
  - python3
  - sqlalchemy
@@ -16,6 +19,8 @@ Dependencies:
 External libraries:
  - jquery: https://jquery.org/license
  - jqplot: https://jqplot.com/info.php
+
+
 
 
 Upcoming features:
