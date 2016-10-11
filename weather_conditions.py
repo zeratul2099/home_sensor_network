@@ -21,7 +21,7 @@ def main():
     log = get_database()
     insert = log.insert()
     insert.execute(sensor_id=0, sensor_name='Outside',
-                   timestamp=timestamp, temperature =temperature,
+                   timestamp=timestamp, temperature=temperature,
                    humidity=humidity)
 
 
