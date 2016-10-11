@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+        <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.min.css" />
+        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+        <script class="include" type="text/javascript" src="/static/jquery.min.js"></script>
+        <script class="include" type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.cursor.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.highlighter.js"></script>
+        <script class="include" type="text/javascript" src="/static/plugins/jqplot.meterGaugeRenderer.js"></script>
+        <title>Temperature and Humidity WebLog</title>
+    </head>
+    <body>
+		<script type='text/javascript'>
+$(document).ready(function () {
+    {% for plot_data in [temperatures, humidities ] %}
+        {% set outer_index = loop.index %}
+        {% for sensor_id, timestamp, tuples in plot_data %}
+            var s{{ sensor_id }} = {{ tuples|safe }};
+        plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [{% for sensor_id, tuples  in plot_data %}s{{ sensor_id }},{% endfor %}], {
+            title: '{{ sensor_map[sensor_id] }}',
+            seriesDefaults: {
+                renderer: $.jqplot.MeterGaugeRenderer,
+                rerdererOptions: {
+                    label: '{{ timestamp }}'
+                    min: 0,
+                    max: {% if outer_index == 0 %}50{% else %}100{% endif %},
+                }
+            },
+            
+            }
+        );
+        {% endfor %}
+    {% endfor %}
+	})
+		</script>
+        <div id='content_container' class='content'>
+        <h3>Plots</h3>
+        <h4><a href='..'>back</a></h4>
+            <h4 style='text-align: center'>
+                Temperature
+            </h4>
+            {% for sensor_id, timestamp, tuples in temperatures %}
+			<div id='chart1_{{ loop.index }}'></div>
+			{% endfor %}
+            <h4 style='text-align: center'>
+                Relative Humidity
+            </h4>
+            {% for sensor_id, timestamp, tuples in humidities %}
+			<div id='chart2_{{ loop.index }}'></div>
+			{% endfor %}
+        </div>
+        <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>
+    </body>
+</html>
