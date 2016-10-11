@@ -27,6 +27,7 @@ $(document).ready(function () {
                     labelPosition: 'bottom',
                     min: 0,
                     max: {% if outer_index == 1 %}50{% else %}100{% endif %},
+                    intervalOuterRadius: 100,
                     intervals: {% if outer_index == 1 %}[15, 25, 40, 50]{% else %}[40, 60, 100]{% endif %},
                     intervalColors: {% if outer_index == 1 %}['#268bd2', '#859900', '#c59900', '#dc322f']{% else %}['#c59900', '#859900', '#c59900']{% endif %},
                 }
