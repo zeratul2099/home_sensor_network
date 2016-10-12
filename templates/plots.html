@@ -57,6 +57,9 @@ $(document).ready(function () {
             
             }
         );
+        $(window).resize(function() {
+                plot{{ loop.index }}.replot( { resetAxes: true } );
+        });
     {% endfor %}
 	})
 		</script>
