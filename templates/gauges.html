@@ -17,6 +17,8 @@ $(document).ready(function () {
             var s{{ sensor_id }} = {{ tuples|safe }};
         plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [s{{ sensor_id }}], {
             title: '{{ sensor_map[sensor_id] }}',
+            height: 300,
+            width: 400,
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
@@ -42,14 +44,16 @@ $(document).ready(function () {
             <h4 style='text-align: center'>
                 Temperature
             </h4>
+            <div>
             {% for sensor_id, timestamp, tuples in temperatures %}
-			<div id='chart1_{{ loop.index }}'></div>
+			<div style='height: 300; width: 400;' id='chart1_{{ loop.index }}'></div>
 			{% endfor %}
+			</div>
             <h4 style='text-align: center'>
                 Relative Humidity
             </h4>
             {% for sensor_id, timestamp, tuples in humidities %}
-			<div id='chart2_{{ loop.index }}'></div>
+			<div style='height: 300; width: 400;' id='chart2_{{ loop.index }}'></div>
 			{% endfor %}
         </div>
         <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>
