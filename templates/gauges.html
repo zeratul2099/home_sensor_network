@@ -16,7 +16,7 @@ $(document).ready(function () {
         {% for sensor_id, timestamp, tuples in plot_data %}
             var s{{ sensor_id }} = {{ tuples|safe }};
         plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [s{{ sensor_id }}], {
-            title: '{{ sensor_map[sensor_id] }}',
+            title: '{{ sensor_map[sensor_id] }}: ' + s{{ sensor_id }}[0] + '{% if outer_index == 1 %}&#176;C{% else %}&#37;{% endif %}',
             height: 300,
             width: 400,
             seriesDefaults: {
