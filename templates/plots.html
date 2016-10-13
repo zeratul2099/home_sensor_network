@@ -45,6 +45,12 @@ $(document).ready(function () {
                     renderer:$.jqplot.DateAxisRenderer
                     }
                 },
+                yaxis:{
+                {% if loop.index == 2 %}
+                min: 0,
+                max: 100,
+                {% endif %}
+                },
             seriesDefaults: {
                 showMarker: false,
             },
