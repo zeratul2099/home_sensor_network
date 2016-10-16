@@ -65,22 +65,32 @@ def plots():
 
 @app.route('/gauges')
 def gauges():
-    log = get_database()
-    tz = pytz.timezone(timezone)
-    temperatures = list()
-    humidities = list()
-    for sensor_id, _ in sorted(sensor_map.items()):
-        query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
-        row = query.execute().fetchall()[0]
-        timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-        temperatures.append((sensor_id, timestamp, [row.temperature]))
-        humidities.append((sensor_id, timestamp, [row.humidity]))
-
-    return render_template('gauges.html', temperatures=temperatures,
-                           humidities=humidities, sensor_map=sensor_map)
+    return render_template('gauges.html', sensor_map=sensor_map)
 
 
 # api
+@app.route('/history')
+def api_history():
+    log = get_database()
+    tz_name = request.args.get('tz')
+    if tz_name is None:
+        tz = pytz.utc
+    else:
+        tz = pytz.timezone(tz_name)
+    now = datetime.utcnow()
+    temperatures = dict()
+    humidities = dict()
+    history = dict()
+    for sensor_id, sensor_name in sensor_map.items():
+        query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
+        for row in query.execute().fetchall():
+            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
+            history.setdefault((sensor_id, sensor_name), list()).append([timestamp, row.temperature, row.humidity])
+    return jsonify(**history)
+
+    
+
+
 @app.route('/latest')
 def api_latest():
     log = get_database()
@@ -96,7 +106,6 @@ def api_latest():
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
         latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity))
     return jsonify(*latest_values)
-
 
 @app.route('/favicon.ico')
 def favicon():
