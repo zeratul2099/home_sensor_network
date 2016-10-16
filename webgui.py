@@ -72,6 +72,14 @@ def gauges():
 @app.route('/history')
 def api_history():
     log = get_database()
+    vtype = request.args.get('type')
+    if not vtype or vtype.lower() in ['t', 'temp', 'temperature']:
+        vtype = 't'
+    elif vtype.lower() in ['h', 'hum', 'humidity']:
+        vtype = 'h'
+    else:
+        raise ValueError('wrong type')
+
     tz_name = request.args.get('tz')
     if tz_name is None:
         tz = pytz.utc
@@ -85,8 +93,12 @@ def api_history():
         history[sensor_id] = (sensor_name, list())
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():
-            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-            history[sensor_id][1].append([timestamp, row.temperature, row.humidity])
+            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')
+            if vtype == 't':
+                value = row.temperature
+            elif vtype == 'h':
+                value = row.humidity
+            history[sensor_id][1].append([timestamp, value])
     return jsonify(**history)
 
     
