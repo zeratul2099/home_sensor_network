@@ -48,19 +48,7 @@ def main(filter_sensor_id=None):
 
 @app.route('/plots')
 def plots():
-    log = get_database()
-    tz = pytz.timezone(timezone)
-    now = datetime.utcnow()
-    temperatures = dict()
-    humidities = dict()
-    for sensor_id in sensor_map:
-        query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
-        for row in query.execute().fetchall():
-            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-            temperatures.setdefault(sensor_id, list()).append([timestamp, row.temperature])
-            humidities.setdefault(sensor_id, list()).append([timestamp, row.humidity])
-    return render_template('plots.html', temperatures=sorted(temperatures.items()),
-                           humidities=sorted(humidities.items()), sensor_map=sensor_map)
+    return render_template('plots.html')
 
 
 @app.route('/gauges')
