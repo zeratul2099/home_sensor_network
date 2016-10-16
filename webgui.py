@@ -67,7 +67,6 @@ def plots():
 def gauges():
     log = get_database()
     tz = pytz.timezone(timezone)
-    now = datetime.utcnow()
     temperatures = list()
     humidities = list()
     for sensor_id, _ in sorted(sensor_map.items()):
@@ -79,6 +78,24 @@ def gauges():
 
     return render_template('gauges.html', temperatures=temperatures,
                            humidities=humidities, sensor_map=sensor_map)
+
+
+# api
+@app.route('/latest')
+def api_latest():
+    log = get_database()
+    tz_name = request.args.get(tz)
+    if tz_name is None:
+        tz = pytz.utc
+    else:
+        tz = pytz.timezone(tz_name)
+    latest_values = list()
+    for sensor_id, sensor_name in sorted(sensor_map.items()):
+        query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
+        row = query.execute().fetchall()[0]
+        timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
+        latest_values.append((sensor_id, sensor_name, timestamp, row.temerature, row.humidity))
+    return flask.jsonify(*latest_values)
 
 
 @app.route('/favicon.ico')
