@@ -52,31 +52,32 @@ $(document).ready(function () {
     }
 
     latest_callback = function(res, status) {
-        console.log(status)
-        console.log(JSON.parse(res.responseText)
+        if (status == "success") {
+            data = JSON.parse(res.responseText)
+            $.each(data, function(idx, tuple) {
+                console.log(idx, tuple)
+                update_plot('chart1_' + (idx+1), tuple, true)
+                update_plot('chart2_' + (idx+1), tuple, false)
+            })
+        }
 
     }
 
-    var args = {type: 'GET', url: '../latest?tz=CET', complate: latest_callback}
+    call_update = function() {
+        var args = {type: 'GET', url: '../latest?tz=CET', complete: latest_callback}
+        $.ajax(args)
+    }
 
-    $.ajax(args)
-
-    {% for plot_data in [temperatures, humidities ] %}
-        {% set outer_index = loop.index %}
-        {% for sensor_id, timestamp, tuples in plot_data %}
-            update_plot('chart{{ outer_index }}_{{ loop.index }}',
-                        [{{ sensor_id }}, '{{ sensor_map[sensor_id] }}', '{{ timestamp }}', {{ tuples|safe }}[0], {{ tuples|safe }}[0]],
-                        {% if outer_index == 1 %}true{% else %}false{% endif %})
-        {% endfor %}
-    {% endfor %}
-    
-
-
+    call_update()
 	})
 		</script>
         <div id='content_container' class='content'>
         <h3>Gauges</h3>
         <h4><a href='..'>back</a></h4>
+        <input type='submit' id='update_button' value='update' class='jsbtn' />
+        <script>
+        $('#update_button').click(function() { call_update() })
+        </script>
             <h4 style='text-align: center'>
                 Temperature
             </h4>
