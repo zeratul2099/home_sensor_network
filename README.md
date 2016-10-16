@@ -24,7 +24,4 @@ External libraries:
 
 
 Upcoming features:
- - ajax-plots
- - don't load whole database on table view
- - outside weather condition
-
+ - navigation, layout
