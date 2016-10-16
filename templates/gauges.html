@@ -51,6 +51,16 @@ $(document).ready(function () {
         })
     }
 
+    latest_callback = function(res, status) {
+        console.log(status)
+        console.log(JSON.parse(res.responseText)
+
+    }
+
+    var args = {type: 'GET', url: '../latest?tz=CET', complate: latest_callback}
+
+    $.ajax(args)
+
     {% for plot_data in [temperatures, humidities ] %}
         {% set outer_index = loop.index %}
         {% for sensor_id, timestamp, tuples in plot_data %}
