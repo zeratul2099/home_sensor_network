@@ -82,10 +82,11 @@ def api_history():
     humidities = dict()
     history = dict()
     for sensor_id, sensor_name in sensor_map.items():
+        history[sensor_id] = (sensor_name, list())
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():
             timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-            history.setdefault((sensor_id, sensor_name), list()).append([timestamp, row.temperature, row.humidity])
+            history[sensor_id][1].append([timestamp, row.temperature, row.humidity])
     return jsonify(**history)
 
     
