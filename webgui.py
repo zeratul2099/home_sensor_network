@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 import pytz
-from flask import Flask, url_for, render_template, request, abort
+from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
 from common import get_database, get_sensor_name
 from settings import sensor_map, timezone
@@ -84,7 +84,7 @@ def gauges():
 @app.route('/latest')
 def api_latest():
     log = get_database()
-    tz_name = request.args.get(tz)
+    tz_name = request.args.get('tz')
     if tz_name is None:
         tz = pytz.utc
     else:
@@ -94,8 +94,8 @@ def api_latest():
         query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
         row = query.execute().fetchall()[0]
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-        latest_values.append((sensor_id, sensor_name, timestamp, row.temerature, row.humidity))
-    return flask.jsonify(*latest_values)
+        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity))
+    return jsonify(*latest_values)
 
 
 @app.route('/favicon.ico')
