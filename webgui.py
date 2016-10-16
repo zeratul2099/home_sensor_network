@@ -77,7 +77,7 @@ def api_history():
     temperatures = dict()
     humidities = dict()
     history = list()
-    for sensor_id, sensor_name in sensor_map.items():
+    for sensor_id, sensor_name in sorted(sensor_map.items()):
         history.append((sensor_id, sensor_name, list()))
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():
