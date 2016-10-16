@@ -55,8 +55,8 @@ $(document).ready(function () {
         if (status == "success") {
             data = JSON.parse(res.responseText)
             $.each(data, function(idx, tuple) {
-                update_plot('chart1_' + (idx+1), tuple, true)
-                update_plot('chart2_' + (idx+1), tuple, false)
+                update_plot('chart_t_' + (idx+1), tuple, true)
+                update_plot('chart_h_' + (idx+1), tuple, false)
             })
         }
 
@@ -82,14 +82,14 @@ $(document).ready(function () {
             </h4>
             <div>
             {% for sensor_id in sensor_map %}
-			<div style='height: 300; width: 400;' id='chart1_{{ loop.index }}'></div>
+			<div style='height: 300; width: 400;' id='chart_t_{{ loop.index }}'></div>
 			{% endfor %}
 			</div>
             <h4 style='text-align: center'>
                 Relative Humidity
             </h4>
             {% for sensor_id in sensor_map %}
-			<div style='height: 300; width: 400;' id='chart2_{{ loop.index }}'></div>
+			<div style='height: 300; width: 400;' id='chart_h_{{ loop.index }}'></div>
 			{% endfor %}
         </div>
         <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>

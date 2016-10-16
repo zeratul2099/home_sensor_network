@@ -57,79 +57,22 @@ $(document).ready(function () {
     }
    
 
-    temp_callback = function(data, status, res) {
-            update_plot('chart1', data)
+    history_callback = function(plot_id) {
+    
+        return function(data, status, res) {
+                update_plot(plot_id, data)
+        }
     }
-
-    hum_callback = function(data, status, res) {
-            update_plot('chart2', data)
-    }
-
     call_update = function() {
-        var args = {type: 'GET', url: '../history?tz=CET&type=t', success: temp_callback}
+        var args = {type: 'GET', url: '../history?tz=CET&type=t', success: history_callback('chart_t')}
         $.ajax(args)
 
-        var args = {type: 'GET', url: '../history?tz=CET&type=h', success: hum_callback}
+        var args = {type: 'GET', url: '../history?tz=CET&type=h', success: history_callback('chart_h')}
         $.ajax(args)
     }
 
     call_update()
 
-    {% for plot_data in [temperatures, humidities ] %}
-        {% for sensor_id, tuples in plot_data %}
-            var s{{ sensor_id }} = {{ tuples|safe }};
-        {% endfor %}
-{#        plot{{ loop.index }} = $.jqplot("chart{{ loop.index }}", [{% for sensor_id, tuples  in plot_data %}s{{ sensor_id }},{% endfor %}], {
-            // Turns on animatino for all series in this plot.
-            animate: true,
-            // Will animate plot on calls to plot1.replot({resetAxes:true})
-            animateReplot: true,
-            cursor: {
-                show: true,
-                zoom: true,
-                looseZoom: true,
-                showTooltip: false
-            },
-            highlighter: {
-                show: true
-            },
-            legend: {
-                show: true,
-                location: 'nw',
-                renderer: $.jqplot.EnhancedLegendRenderer,
-                rendererOptions: {
-                    seriesToggle: 'normal'
-                }
-            },
-            axes:{
-                xaxis:{
-                    renderer:$.jqplot.DateAxisRenderer
-                    }
-                },
-                yaxis:{
-                {% if loop.index == 2 %}
-                min: 0,
-                max: 100,
-                {% endif %}
-                },
-            seriesDefaults: {
-                showMarker: false,
-            },
-            series:[
-            {% for sensor_id, tuples in plot_data %}
-                {
-                    label: '{{ sensor_map[sensor_id] }}'
-                },
-            {%- endfor %}
-            ]
-            
-            }
-        );
-        $(window).resize(function() {
-                plot{{ loop.index }}.replot( { resetAxes: true } );
-        }); #}
-    {% endfor %} 
-    console.log([s0,s1,s2,s3])
 	})
 		</script>
         <div id='content_container' class='content'>
@@ -138,11 +81,11 @@ $(document).ready(function () {
             <h4 style='text-align: center'>
                 Temperature
             </h4>
-			<div id='chart1'></div>
+			<div id='chart_t'></div>
             <h4 style='text-align: center'>
                 Relative Humidity
             </h4>
-			<div id='chart2'></div>
+			<div id='chart_h'></div>
         </div>
         <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>
     </body>
