@@ -14,7 +14,81 @@
     <body>
 		<script type='text/javascript'>
 $(document).ready(function () {
-    {% for plot_data in [temperatures, humidities ] %}
+    
+    update_plot = function(plot_id, data, is_temperature) {
+        // data: sensor_id, sensor_name, list([ts, value])
+        var values = []
+        var series_data = []
+        $.each(data, function(idx, sensor_data) {
+            values.push(sensor_data[2])
+            series_data.push({label: sensor_data[1]})
+        })
+        if (is_temperature) {
+            var value = data[3]
+            var svalue = data[3] + '&#176;C'
+        } else {
+            var value = data[4]
+            var svalue = data[4] + '&#37;'
+        }
+        var plot = $.jqplot(plot_id, [values], {
+            animate: true,
+            animateReplot: true,
+            cursor: {
+                show: true,
+                zoom: true,
+                looseZoom: true,
+                showTooltip: false,
+            },
+            highlighter: {
+                show: true,
+            },
+            legend: {
+                show: true,
+                location: 'nw',
+                renderer: $.jqplot.EnhancedLegendRenderer,
+                rendererOptions: {
+                    seriesToggle: 'normal',
+                },
+            },
+            axes: {
+                xaxis: {
+                    renderer:$.jqplotDateAxisRenderer,
+                },
+                yaxis: {
+                },
+            },
+            seriesDefaults: {
+                showMarker: false,
+            },
+            series: series_data,
+        })
+    }
+   
+    temp_callback = function(res, status) {
+        if (status == 'success') {
+            data = JSON.parse(res.repsonseText)
+            update_plot('chart1', data, true)
+        }
+    }
+
+    hum_callback = function(res, status) {
+        if (status == 'success') {
+            data = JSON.parse(res.repsonseText)
+            update_plot('chart2', data, false)
+        }
+    }
+
+    call_update = function() {
+        var args = {type: 'GET', url: '../history?tz=CET&type=t', complete: temp_callback}
+        $.ajax(args)
+
+        var args = {type: 'GET', url: '../history?tz=CET&type=h', complete: hum_callback}
+        $.ajax(args)
+    }
+
+    call_update()
+
+{#    {% for plot_data in [temperatures, humidities ] %}
         {% for sensor_id, tuples in plot_data %}
             var s{{ sensor_id }} = {{ tuples|safe }};
         {% endfor %}
@@ -67,7 +141,7 @@ $(document).ready(function () {
         $(window).resize(function() {
                 plot{{ loop.index }}.replot( { resetAxes: true } );
         });
-    {% endfor %}
+    {% endfor %} #}
 	})
 		</script>
         <div id='content_container' class='content'>
