@@ -48,12 +48,12 @@ def main(filter_sensor_id=None):
 
 @app.route('/plots')
 def plots():
-    return render_template('plots.html')
+    return render_template('plots.html', timezone=timezone)
 
 
 @app.route('/gauges')
 def gauges():
-    return render_template('gauges.html', sensor_map=sensor_map)
+    return render_template('gauges.html', sensor_map=sensor_map, timezone=timezone)
 
 
 # api

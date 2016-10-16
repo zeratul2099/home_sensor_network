@@ -49,6 +49,9 @@ $(document).ready(function () {
         
         
         })
+        $(window).resize(function() {
+                    plot.replot( { resetAxes: true } );
+            });
     }
 
     latest_callback = function(res, status) {
@@ -63,7 +66,7 @@ $(document).ready(function () {
     }
 
     call_update = function() {
-        var args = {type: 'GET', url: '../latest?tz=CET', complete: latest_callback}
+        var args = {type: 'GET', url: '../latest?tz={{ timezone }}', complete: latest_callback}
         $.ajax(args)
     }
 
