@@ -14,23 +14,14 @@
     <body>
 		<script type='text/javascript'>
 $(document).ready(function () {
-    
-    update_plot = function(plot_id, data, is_temperature) {
-        // data: sensor_id, sensor_name, list([ts, value])
+    update_plot = function(plot_id, data) {
         var values = []
         var series_data = []
         $.each(data, function(idx, sensor_data) {
             values.push(sensor_data[2])
             series_data.push({label: sensor_data[1]})
         })
-        if (is_temperature) {
-            var value = data[3]
-            var svalue = data[3] + '&#176;C'
-        } else {
-            var value = data[4]
-            var svalue = data[4] + '&#37;'
-        }
-        var plot = $.jqplot(plot_id, [values], {
+        var plot = $.jqplot(plot_id, values, {
             animate: true,
             animateReplot: true,
             cursor: {
@@ -50,11 +41,9 @@ $(document).ready(function () {
                     seriesToggle: 'normal',
                 },
             },
-            axes: {
-                xaxis: {
-                    renderer:$.jqplotDateAxisRenderer,
-                },
-                yaxis: {
+            axes:{
+                xaxis:{
+                    renderer:$.jqplot.DateAxisRenderer
                 },
             },
             seriesDefaults: {
@@ -62,37 +51,35 @@ $(document).ready(function () {
             },
             series: series_data,
         })
+        $(window).resize(function() {
+                    plot.replot( { resetAxes: true } );
+            });
     }
    
-    temp_callback = function(res, status) {
-        if (status == 'success') {
-            data = JSON.parse(res.repsonseText)
-            update_plot('chart1', data, true)
-        }
+
+    temp_callback = function(data, status, res) {
+            update_plot('chart1', data)
     }
 
-    hum_callback = function(res, status) {
-        if (status == 'success') {
-            data = JSON.parse(res.repsonseText)
-            update_plot('chart2', data, false)
-        }
+    hum_callback = function(data, status, res) {
+            update_plot('chart2', data)
     }
 
     call_update = function() {
-        var args = {type: 'GET', url: '../history?tz=CET&type=t', complete: temp_callback}
+        var args = {type: 'GET', url: '../history?tz=CET&type=t', success: temp_callback}
         $.ajax(args)
 
-        var args = {type: 'GET', url: '../history?tz=CET&type=h', complete: hum_callback}
+        var args = {type: 'GET', url: '../history?tz=CET&type=h', success: hum_callback}
         $.ajax(args)
     }
 
     call_update()
 
-{#    {% for plot_data in [temperatures, humidities ] %}
+    {% for plot_data in [temperatures, humidities ] %}
         {% for sensor_id, tuples in plot_data %}
             var s{{ sensor_id }} = {{ tuples|safe }};
         {% endfor %}
-        plot{{ loop.index }} = $.jqplot("chart{{ loop.index }}", [{% for sensor_id, tuples  in plot_data %}s{{ sensor_id }},{% endfor %}], {
+{#        plot{{ loop.index }} = $.jqplot("chart{{ loop.index }}", [{% for sensor_id, tuples  in plot_data %}s{{ sensor_id }},{% endfor %}], {
             // Turns on animatino for all series in this plot.
             animate: true,
             // Will animate plot on calls to plot1.replot({resetAxes:true})
@@ -140,8 +127,9 @@ $(document).ready(function () {
         );
         $(window).resize(function() {
                 plot{{ loop.index }}.replot( { resetAxes: true } );
-        });
-    {% endfor %} #}
+        }); #}
+    {% endfor %} 
+    console.log([s0,s1,s2,s3])
 	})
 		</script>
         <div id='content_container' class='content'>
