@@ -14,28 +14,71 @@ $(document).ready(function () {
     {% for plot_data in [temperatures, humidities ] %}
         {% set outer_index = loop.index %}
         {% for sensor_id, timestamp, tuples in plot_data %}
-            var s{{ sensor_id }} = {{ tuples|safe }};
-        plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [s{{ sensor_id }}], {
-            title: '{{ sensor_map[sensor_id] }}: ' + s{{ sensor_id }}[0] + '{% if outer_index == 1 %}&#176;C{% else %}&#37;{% endif %}',
+            update_plot('chart{{ outer_index }}_{{ loop.index }}', [{{ sensor_id }}, '{{ sensor_map[sensor_id] }}', '{{ timestamp }}', {{ tuples|safe }}[0], {{ tuples|safe }}[0], {% if outer_index == 1 %}true{% else %}false{% endif %}])
+//            var s{{ sensor_id }} = {{ tuples|safe }};
+//        plot{{outer_index}}_{{ loop.index }} = $.jqplot("chart{{ outer_index }}_{{ loop.index }}", [s{{ sensor_id }}], {
+//            title: '{{ sensor_map[sensor_id] }}: ' + s{{ sensor_id }}[0] + '{% if outer_index == 1 %}&#176;C{% else %}&#37;{% endif %}',
+//            height: 300,
+//            width: 400,
+//            seriesDefaults: {
+//                renderer: $.jqplot.MeterGaugeRenderer,
+//                rendererOptions: {
+//                    label: '{{ timestamp }}',
+//                    labelPosition: 'bottom',
+//                    min: 0,
+//                    max: {% if outer_index == 1 %}50{% else %}100{% endif %},
+//                    intervalOuterRadius: 100,
+//                    intervals: {% if outer_index == 1 %}[15, 25, 40, 50]{% else %}[40, 60, 100]{% endif %},
+//                    intervalColors: {% if outer_index == 1 %}['#268bd2', '#859900', '#c59900', '#dc322f']{% else %}['#c59900', '#859900', '#c59900']{% endif %},
+//                }
+//            },
+//            
+//            }
+//        );
+        {% endfor %}
+    {% endfor %}
+    
+
+    update_plot = function(plot_id, data, is_temperature) {
+        // data: sensor_id, sensor_name, timestamp, temp, hum
+        if (is_temperature) {
+            var value = data[3]
+            var svalue = data[3] + '&#176;C'
+            var max_value = 50
+            var intervals = [15, 25, 40, 50]
+            var intervalColors: ['#268bd2', '#859900', '#c59900', '#dc322f']
+        } else {
+            var value = data[4]
+            var svalue = data[4] + '&#37;'
+            var max_value = 100
+            var intervals = [40, 60, 100]
+            var intervalColors: ['#c59900', '#859900', '#c59900']
+        }
+        var title = data[1] + ': ' + svalue
+        var plot = $.jqplot(plot_id, [value], {
+            title: title,
             height: 300,
             width: 400,
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: '{{ timestamp }}',
+                    label: data[2],
                     labelPosition: 'bottom',
                     min: 0,
-                    max: {% if outer_index == 1 %}50{% else %}100{% endif %},
+                    max: max_value,
                     intervalOuterRadius: 100,
-                    intervals: {% if outer_index == 1 %}[15, 25, 40, 50]{% else %}[40, 60, 100]{% endif %},
-                    intervalColors: {% if outer_index == 1 %}['#268bd2', '#859900', '#c59900', '#dc322f']{% else %}['#c59900', '#859900', '#c59900']{% endif %},
+                    intervals: intervals,
+                    intervalColors: intervalColors
+
+                
                 }
-            },
-            
             }
-        );
-        {% endfor %}
-    {% endfor %}
+        
+        
+        })
+
+    }
+
 	})
 		</script>
         <div id='content_container' class='content'>
