@@ -57,7 +57,7 @@ def gauges():
 
 
 # api
-@app.route('/history')
+@app.route('/api/history')
 def api_history():
     log = get_database()
     vtype = request.args.get('type')
@@ -92,7 +92,7 @@ def api_history():
     
 
 
-@app.route('/latest')
+@app.route('/api/latest')
 def api_latest():
     log = get_database()
     tz_name = request.args.get('tz')

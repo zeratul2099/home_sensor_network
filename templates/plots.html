@@ -64,10 +64,10 @@ $(document).ready(function () {
         }
     }
     call_update = function() {
-        var args = {type: 'GET', url: '../history?tz={{ timezone }}&type=t', success: history_callback('chart_t')}
+        var args = {type: 'GET', url: '../api/history?tz={{ timezone }}&type=t', success: history_callback('chart_t')}
         $.ajax(args)
 
-        var args = {type: 'GET', url: '../history?tz={{ timezone }}&type=h', success: history_callback('chart_h')}
+        var args = {type: 'GET', url: '../api/history?tz={{ timezone }}&type=h', success: history_callback('chart_h')}
         $.ajax(args)
     }
 
