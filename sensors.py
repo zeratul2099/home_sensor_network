@@ -25,10 +25,20 @@ def main():
         now = datetime.utcnow()
         print('%s: Sensor: %s, Temperature: %s, Humidity: %s' %
             (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict['TC'], value_dict['RH']))
+        for k, v in value_dict.items():
+            print(k, v)
+        try:
+            temperature = float(value_dict['TC'])
+        except ValueError:
+            temperature = None
+        try:
+            humidity = float(value_dict['RH'].strip('%'))
+        except ValueError:
+            humidity = None
         insert = log.insert()
         insert.execute(sensor_id=int(value_dict['ID']), sensor_name=sensor,
-                       timestamp=now, temperature=float(value_dict['TC']),
-                       humidity=float(value_dict['RH'].strip('%'))
+                       timestamp=now, temperature=temperature,
+                       humidity=humidity
                       )
 
 
