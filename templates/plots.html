@@ -21,9 +21,10 @@ $(document).ready(function () {
             values.push(sensor_data[2])
             series_data.push({label: sensor_data[1]})
         })
+        $(plot_id).empty()
         var plot = $.jqplot(plot_id, values, {
-            animate: true,
-            animateReplot: true,
+            // animate: true,
+            // animateReplot: true,
             cursor: {
                 show: true,
                 zoom: true,
