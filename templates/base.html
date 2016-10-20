@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+        <title>Temperature and Humidity WebLog</title>
+{% block head %}{% endblock %}
+    </head>
+    <body>
+        {% block bodyscript %}{% endblock %}
+        <div id='content_container' class='content'>
+        {% block content %}{% endblock %}
+        </div>
+        <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>
+    </body>
+</html>

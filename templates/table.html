@@ -1,11 +1,5 @@
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="/static/styles.css">
-        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
-        <title>Temperature and Humidity WebLog</title>
-    </head>
-    <body>
-        <div id='content_container' class='content'>
+{% extends 'base.html' %}
+        {% block content %}
         {% if sensor_name %}<h3>{{ sensor_name }}</h3>
         <h4><a href='..?page=0'>back</a></h4>
         {% else %}
@@ -41,7 +35,4 @@
                 {% if page|int < maxpages %}<a href='?page={{ page|int + 1 }}'>next</a>{% else %}next{% endif %}
             {% endif %}
             </h4>
-        </div>
-        <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>
-    </body>
-</html>
+        {% endblock %}

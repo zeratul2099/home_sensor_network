@@ -1,14 +1,11 @@
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+{% extends 'base.html' %}
+    {% block head %}
         <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.min.css" />
-        <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
         <script class="include" type="text/javascript" src="/static/jquery.min.js"></script>
         <script class="include" type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
         <script class="include" type="text/javascript" src="/static/plugins/jqplot.meterGaugeRenderer.js"></script>
-        <title>Temperature and Humidity WebLog</title>
-    </head>
-    <body>
+    {% endblock %}
+    {% block bodyscript %}
 		<script type='text/javascript'>
 $(document).ready(function () {
     
@@ -73,7 +70,8 @@ $(document).ready(function () {
     call_update()
 	})
 		</script>
-        <div id='content_container' class='content'>
+	{% endblock %}
+	{% block content %}
         <h3>Gauges</h3>
         <h4><a href='..'>back</a></h4>
         <input type='submit' id='update_button' value='update' class='jsbtn' />
@@ -94,7 +92,4 @@ $(document).ready(function () {
             {% for sensor_id in sensor_map %}
 			<div style='height: 300; width: 400;' id='chart_h_{{ loop.index }}'></div>
 			{% endfor %}
-        </div>
-        <div id='footer'>Outside <a style='color: lightgray' href='https://darksky.net/poweredby/'>Powered by Darksky</a></div>
-    </body>
-</html>
+        {% endblock %}
