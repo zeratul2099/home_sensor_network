@@ -6,8 +6,6 @@
         <h3>Table</h3>
         {% endif %}
             <h4 style='text-align: center'>
-            <div><a href='/plots'>Plots</a>
-            <a href='/gauges'>Gauges</a></div>
             {% if page != 'all' %}
                 {% if page != '0' %}<a href='?page={{ page|int - 1 }}'>prev</a>{% else %}prev{% endif %}
             {{ page|int + 1 }}

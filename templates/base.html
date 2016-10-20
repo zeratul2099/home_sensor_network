@@ -7,6 +7,13 @@
 {% block head %}{% endblock %}
     </head>
     <body>
+    <div id='header'>
+            <div >
+                <a href='/'>Table</a>
+                <a href='/plots'>Plots</a>
+                <a href='/gauges'>Gauges</a>
+            </div>
+    </div>
         {% block bodyscript %}{% endblock %}
         <div id='content_container' class='content'>
         {% block content %}{% endblock %}

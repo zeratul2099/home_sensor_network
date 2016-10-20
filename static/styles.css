@@ -11,14 +11,14 @@ body
         
 #header
 		{
-	margin: 0 0 0.7em;
-	background:#1f1f1f;
-        color:#f0f0f0;
-        font-family:'Orbitron', 'monospace';
-	text-align:center;
-	padding:10px;
-        border-bottom:2px outset #FF0000;
-	text-shadow: 0px 0px 15px red;
+    margin: 0 0 0.7em;
+    background:#1f1f1f;
+    color:#f0f0f0;
+    font-family:'Orbitron', 'monospace';
+    text-align:center;
+    padding:10px;
+    border-bottom:2px outset #FF0000;
+    text-shadow: 0px 0px 15px red;
 
 		}
 
