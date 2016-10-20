@@ -25,8 +25,6 @@ def main():
         now = datetime.utcnow()
         print('%s: Sensor: %s, Temperature: %s, Humidity: %s' %
             (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict['TC'], value_dict['RH']))
-        for k, v in value_dict.items():
-            print(k, v)
         try:
             temperature = float(value_dict['TC'])
         except ValueError:
