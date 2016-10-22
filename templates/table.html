@@ -21,8 +21,8 @@
                     <td><a href='{{ entry.sensor_id }}?page=0'>{{ entry.sensor_id }}</a></td>
                     <td><a href='{{ entry.sensor_id }}?page=0'>{{ entry.sensor_name }}</a></td>
                     <td>{{ entry.timestamp }}</td>
-                    <td>{{ entry.temperature }}</td>
-                    <td>{{ entry.humidity }}</td>
+                    <td>{{ '%.1f'|format(entry.temperature) }}</td>
+                    <td>{{ '%.1f'|format(entry.humidity) }}</td>
                 </tr>
             {% endfor %}
             </table>
