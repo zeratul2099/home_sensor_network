@@ -24,7 +24,7 @@ def main():
         sensor = get_sensor_name(value_dict['ID'])
         now = datetime.utcnow()
         print('%s: Sensor: %s, Temperature: %s, Humidity: %s' %
-            (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict['TC'], value_dict['RH']))
+            (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict.get('TC', 'NaN'), value_dict.get('RH', 'NaN')))
         try:
             temperature = float(value_dict['TC'])
         except ValueError:
