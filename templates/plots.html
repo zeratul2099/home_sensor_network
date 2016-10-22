@@ -43,6 +43,11 @@ $(document).ready(function () {
                 xaxis:{
                     renderer:$.jqplot.DateAxisRenderer
                 },
+                yaxis:{
+                    tickOptions: {
+                        formatString: '%#.1f',
+                    },
+                },
             },
             seriesDefaults: {
                 showMarker: false,
