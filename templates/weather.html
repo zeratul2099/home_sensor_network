@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+        {% block content %}
+        <h3>Current weather conditions</h3>
+        <table>
+            <tr><td>Temperature</td><td>{{ conditions['currently']['temperature'] }}&#176;C</td></tr>
+            <tr><td>Apparent Temperature</td><td>{{ conditions['currently']['apparentTemperature'] }}&#176;C</td></tr>
+            <tr><td>Relative Humidity</td><td>{{ conditions['currently']['humidity'] * 100 }}&#37;</td></tr>
+            <tr><td>Dew Point</td><td>{{ conditions['currently']['dewPoint'] }}&#176;C</td></tr>
+            <tr><td>Pressure</td><td>{{ conditions['currently']['pressure'] }}Pa</td></tr>
+            <tr><td>Wind Speed</td><td>{{ conditions['currently']['windSpeed'] }}m/s</td></tr>
+            <tr><td>Wind Direction</td><td>{{ conditions['currently']['windBearing'] }}&#176;</td></tr>
+            <tr><td>Cloud Cover</td><td>{{ conditions['currently']['cloudCover'] * 100 }}&#37;</td></tr>
+            <tr><td>Precipitation</td><td>{{ conditions['currently']['precipIntensity'] * 100 }}&#37; {{ conditions['currently']['precipType']}}</td></tr>
+            <tr><td>Probability</td><td>{{ conditions['currently']['precipProbability'] * 100 }}&#37;</td></tr>
+            <tr><td>Status from</td><td>{{ timestamp }}</td></tr>
+
+        </table>
+        {% endblock %}
