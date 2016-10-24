@@ -1,4 +1,5 @@
 from datetime import datetime
+import pickle
 
 import pytz
 import requests
@@ -24,6 +25,8 @@ def main():
                    timestamp=timestamp, temperature=temperature,
                    humidity=humidity)
 
+    with open('weatherdump.pkl', 'wb') as dumpfile:
+        pickle.dump(result, dumpfile)
 
 if __name__ == '__main__':
     main()
