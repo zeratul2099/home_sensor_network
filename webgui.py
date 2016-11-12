@@ -4,7 +4,7 @@ import pickle
 import pytz
 from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
-from common import get_database, get_sensor_name
+from common import get_database, get_sensor_name, get_latest_values
 from settings import sensor_map, timezone
 app = Flask(__name__)
 
@@ -67,6 +67,12 @@ def weather():
     return render_template('weather.html', conditions=conditions, timestamp=timestamp)
 
 
+@app.route('/simple')
+def simple():
+   latest_values = get_latest_values(timezone)
+   return render_template('simple.html', latest_values=latest_values)
+
+
 # api
 @app.route('/api/history')
 def api_history():
@@ -100,24 +106,12 @@ def api_history():
             history[-1][2].append([timestamp, value])
     return jsonify(*history)
 
-    
-
 
 @app.route('/api/latest')
 def api_latest():
-    log = get_database()
-    tz_name = request.args.get('tz')
-    if tz_name is None:
-        tz = pytz.utc
-    else:
-        tz = pytz.timezone(tz_name)
-    latest_values = list()
-    for sensor_id, sensor_name in sorted(sensor_map.items()):
-        query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
-        row = query.execute().fetchall()[0]
-        timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity))
+    latest_values = get_latest_values(request.args.get('tz'))
     return jsonify(*latest_values)
+
 
 @app.route('/favicon.ico')
 def favicon():
@@ -126,6 +120,7 @@ def favicon():
 
 with app.test_request_context():
     url_for('static', filename='styles.css')
+
 
 if __name__ == '__main__':
     app.run()

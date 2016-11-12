@@ -1,5 +1,6 @@
-from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime
+from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime, desc
 from sqlalchemy.exc import OperationalError, InternalError
+import pytz
 
 from settings import database, sensor_map
 
@@ -27,3 +28,18 @@ def get_database():
         # traceback.print_exc()
         pass
     return log
+
+
+def get_latest_values(tz_name=None):
+    log = get_database()
+    if tz_name is None:
+        tz = pytz.utc
+    else:
+        tz = pytz.timezone(tz_name)
+    latest_values = list()
+    for sensor_id, sensor_name in sorted(sensor_map.items()):
+        query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
+        row = query.execute().fetchall()[0]
+        timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
+        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity))
+    return latest_values
