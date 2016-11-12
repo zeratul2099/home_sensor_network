@@ -22,7 +22,11 @@ body
 
 		}
 
+#header a:link { color: #d0d0d0; }
 
+#header a:visited { color: #d0d0d0; }
+
+#header a:hover { color: red; }
 
 #content_container
 		{
