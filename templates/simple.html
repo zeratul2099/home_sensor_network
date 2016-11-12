@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
         {% block content %}
         <h3>Latest sensor values</h3>
-        Foo
+        {% for sendor_id, sensor_name, timestamp, temperature, humidity in latest_values %}
+            <div><h4>{{ sensor_name }}:</h4><span>{{ temperature }}, {{ humidity }}</span></div>
+        {% endfor %}
         {% endblock %}
