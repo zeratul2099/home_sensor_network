@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime, desc
 from sqlalchemy.exc import OperationalError, InternalError
 import pytz
@@ -40,6 +42,10 @@ def get_latest_values(tz_name=None):
     for sensor_id, sensor_name in sorted(sensor_map.items()):
         query = log.select().where(log.c.sensor_id == int(sensor_id)).order_by(desc(log.c.timestamp)).limit(1)
         row = query.execute().fetchall()[0]
+        if row.timestamp < datetime.utcnow() - timedelta(hours=2):
+            old_value = True
+        else:
+            old_value = False
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity))
+        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity, old_value))
     return latest_values
