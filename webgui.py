@@ -69,8 +69,12 @@ def weather():
 
 @app.route('/simple')
 def simple():
-   latest_values = get_latest_values(timezone)
-   return render_template('simple.html', latest_values=latest_values)
+    if request.args.get('wouldbe'):
+        would_be = True
+    else:
+        would_be = False
+    latest_values = get_latest_values(timezone, would_be=would_be)
+    return render_template('simple.html', latest_values=latest_values)
 
 
 # api

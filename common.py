@@ -33,7 +33,7 @@ def get_database():
     return log
 
 
-def get_latest_values(tz_name=None):
+def get_latest_values(tz_name=None, would_be=False):
     log = get_database()
     if tz_name is None:
         tz = pytz.utc
@@ -49,6 +49,14 @@ def get_latest_values(tz_name=None):
             old_value = False
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
         latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity, old_value))
+    if would_be is True:
+        would_be_values = list()
+        # assume that the first "sensor" is outside
+        for sensor_id, sensor_name, timestamp, temperature, humidity, old_value in latest_values[1:]:
+            would_be_hum = transpose_humidity(latest_values[0][4], latest_values[0][5], temperature)
+            would_be_values.append((sensor_id + 100, sensor_name + '_x', timestamp,
+                                    temperature, would_be_hum, old_value))
+        latest_values += would_be_values
     return latest_values
 
 
