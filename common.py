@@ -73,8 +73,8 @@ def transpose_humidity(input_t, input_h, target_t):
     ew01 = fp * ew0 * 100
     e0 = ew01 * (input_h / 100)
     AH = e0 / (Rv * t0)
-    # return AH
     t1 = target_t + 273.15
+
     e1 = AH * 461.5 * t1
     ew1 = 6.112 * exp((17.62 * target_t) / (243.12 + target_t))
     ew11 = fp * ew1 * 100
