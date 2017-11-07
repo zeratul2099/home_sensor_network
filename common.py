@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from math import exp
 
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime, desc
 from sqlalchemy.exc import OperationalError, InternalError
@@ -49,3 +50,32 @@ def get_latest_values(tz_name=None):
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
         latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity, old_value))
     return latest_values
+
+
+def transpose_humidity(input_t, input_h, target_t):
+    '''
+    input_t: outsite temperature in C
+    input_h: outsite humidity in %
+    target_t: inside temperature in C
+
+    '''
+    Rv = 461.5
+    t0 = input_t + 273.15
+    p = 1024.0 # hPa
+    ew0 = 6.112 * exp((17.62 * input_t) / (243.12 + input_t))
+    fp = 1.0016 + 3.15 * 10**-6 * p - 0.074 * p**-1
+    ew01 = fp * ew0 * 100
+    e0 = ew01 * (input_h / 100)
+    AH = e0 / (Rv * t0)
+    # return AH
+    t1 = target_t + 273.15
+    e1 = AH * 461.5 * t1
+    ew1 = 6.112 * exp((17.62 * target_t) / (243.12 + target_t))
+    ew11 = fp * ew1 * 100
+    target_h = 100 * e1 / ew11
+
+    return target_h
+
+
+    
+
