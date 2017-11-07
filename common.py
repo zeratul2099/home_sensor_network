@@ -49,7 +49,7 @@ def get_latest_values(tz_name=None, would_be=False):
             old_value = False
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
         # assume that the first "sensor" is outside
-        if if sensor_id != '0' and would_be is True:
+        if sensor_id != '0' and would_be is True:
             would_be_hum = transpose_humidity(latest_values[0][3], latest_values[0][4], row.temperature)
         else:
             would_be_hum = None
