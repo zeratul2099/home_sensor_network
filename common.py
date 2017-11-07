@@ -48,15 +48,13 @@ def get_latest_values(tz_name=None, would_be=False):
         else:
             old_value = False
         timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M')
-        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature, row.humidity, old_value))
-    if would_be is True:
-        would_be_values = list()
         # assume that the first "sensor" is outside
-        for sensor_id, sensor_name, timestamp, temperature, humidity, old_value in latest_values[1:]:
-            would_be_hum = transpose_humidity(latest_values[0][4], latest_values[0][5], temperature)
-            would_be_values.append((str(int(sensor_id) + 100), sensor_name + '_x', timestamp,
-                                    temperature, would_be_hum, old_value))
-        latest_values += would_be_values
+        if if sensor_id != '0' and would_be is True:
+            would_be_hum = transpose_humidity(latest_values[0][3], latest_values[0][4], row.temperature)
+        else:
+            would_be_hum = None
+        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature,
+                              row.humidity, would_be_hum, old_value))
     return latest_values
 
 
