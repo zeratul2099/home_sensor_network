@@ -2,7 +2,7 @@
         {% block content %}
         {% for sensor_name, values in mean_values.items() %}
             <h3>{{ sensor_name }}</h3>
-            {% for timestamp, (temperature, humidity) in values.items() %}
+            {% for timestamp, temperature, humidity in values %}
             <div>{{ timestamp.strftime('%d.%m.%Y') }}
                 <span>{{ '%.2f'|format(temperature) }}&#176;C,
                       {{ '%.2f'|format(humidity) }}&#37;</span>

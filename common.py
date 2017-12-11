@@ -82,7 +82,7 @@ def get_timespan_mean_values(begin, end):
         current = begin
         while current <= end:
             day, t, h = get_day_mean_values(sensor_id, current, log=log)
-            result.setdefault(sensor_name, dict())[day] = (t, h)
+            result.setdefault(sensor_name, list()).append((day, t, h))
             current += timedelta(days=1)
     return result
 
