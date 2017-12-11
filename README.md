@@ -15,6 +15,7 @@ Dependencies:
  - flask
  - pytz
  - requests
+ - numpy
 
 External libraries:
  - jquery: https://jquery.org/license
