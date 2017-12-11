@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
         {% block content %}
         {% for sensor_id, sensor_name, timestamp, temperature, humidity, would_be_hum, is_old in latest_values %}
-            <div {% if is_old %}class='red'{% endif %} ><h3>{{ sensor_name }}</h3><h4>{{ timestamp }}:</h4><span>{{ temperature }}&#176;C, {{ humidity }}&#37;{% if would_be_hum %}, {{ '%.1f' | format(would_be_hum) }}&#37;{% endif %}</span></div>
+            <div {% if is_old %}class='red'{% endif %} ><h3>{{ sensor_name }}</h3><h4>{{ timestamp }}:</h4><span>{{ '%.1f' | format(temperature) }}&#176;C, {{ '%.1f' | format(humidity) }}&#37;{% if would_be_hum %}, {{ '%.1f' | format(would_be_hum) }}&#37;{% endif %}</span></div>
         {% endfor %}
         {% endblock %}
