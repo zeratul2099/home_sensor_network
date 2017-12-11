@@ -4,7 +4,7 @@ import pickle
 import pytz
 from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
-from common import get_database, get_sensor_name, get_latest_values
+from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values
 from settings import sensor_map, timezone
 app = Flask(__name__)
 
@@ -75,6 +75,14 @@ def simple():
         would_be = False
     latest_values = get_latest_values(timezone, would_be=would_be)
     return render_template('simple.html', latest_values=latest_values)
+
+
+@app.route('/mean')
+def mean():
+    end = datetime.utcnow()
+    begin = end - timedelta(days=60)
+    mean_values = get_timespan_mean_values(begin, end)
+    return render_template('mean.html', mean_values=mean_values)
 
 
 # api

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from math import exp
 
+import numpy
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime, desc
 from sqlalchemy.exc import OperationalError, InternalError
 import pytz
@@ -57,6 +58,33 @@ def get_latest_values(tz_name=None, would_be=False):
                               row.humidity, would_be_hum, old_value))
     return latest_values
 
+def get_day_mean_values(sensor_id, day, log=None):
+    if log is None:
+        log = get_database()
+    begin = datetime(day.year, day.month, day.day, 0, 0)
+    end = datetime(day.year, day.month, day.day, 23, 59)
+    query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp >= begin).where(log.c.timestamp <= end)
+    ts = list()
+    hs = list()
+    for row in query.execute().fetchall():
+        ts.append(row.temperature)
+        hs.append(row.humidity)
+    ts = numpy.array(ts)
+    hs = numpy.array(hs)
+    t_mean = numpy.mean(ts)
+    h_mean = numpy.mean(hs)
+    return begin, t_mean, h_mean
+
+def get_timespan_mean_values(begin, end):
+    result = dict()
+    log = get_database()
+    for sensor_id, sensor_name in sensor_map.items():
+        current = begin
+        while current <= end:
+            day, t, h = get_day_mean_values(sensor_id, current, log=log)
+            result.setdefault(sensor_name, dict())[day] = (t, h)
+            current += timedelta(days=1)
+    return result
 
 def transpose_humidity(input_t, input_h, target_t):
     '''
