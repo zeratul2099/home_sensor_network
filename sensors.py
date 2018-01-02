@@ -27,11 +27,11 @@ def main():
             (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict.get('TC', 'NaN'), value_dict.get('RH', 'NaN')))
         try:
             temperature = float(value_dict['TC'])
-        except ValueError:
+        except (ValueError, KeyError):
             temperature = None
         try:
             humidity = float(value_dict['RH'].strip('%'))
-        except ValueError:
+        except (ValueError, KeyError):
             humidity = None
         insert = log.insert()
         insert.execute(sensor_id=int(value_dict['ID']), sensor_name=sensor,
