@@ -19,3 +19,13 @@ darksky_api_key = None
 
 # your location
 lat_lon = (50.0, 10.0)
+
+# get from pushover.net
+pa_app_token = ''
+pa_user_key = ''
+
+# list of tuples: (sensor_id, [t or h], value, [+ or -] (for above or below)
+# example (1, 't', 28.0, '+')
+# alert at temperature over 28.0 at sensor 1
+notification_constraints = [
+]
