@@ -30,16 +30,20 @@ def check_notification(sensor, vtype, value, ts):
     global NOTIFIED
     for idx, (csensor, ctype, cvalue, cmp) in enumerate(notification_constraints):
         if sensor == csensor and ctype == vtype:
+            sensor_name = get_sensor_name(str(sensor))
             if idx not in NOTIFIED:
                 if (cmp == '+' and value > cvalue) or (cmp == '-' and value < cvalue):
                     # notify
                     cmp_word = 'over' if cmp == '+' else 'below'
-                    sensor_name = get_sensor_name(str(sensor))
-                    msg = '%s: %s is %s limit of %s at %s (%s)' % (sensor_name, vtype, cmp_word, cvalue, value, ts)
+                    msg = '%s: %s is %s limit of %s (%s)' % (sensor_name, vtype, cmp_word, cvalue, ts)
                     print(msg)
                     send_message_retry(msg)
                     NOTIFIED.add(idx)
             elif (cmp == '+' and value < cvalue) or (cmp == '-' and value > cvalue):
+                cmp_word = 'below' if cmp == '+' else 'over'
+                msg = '%s all clear: %s is %s limit of %s again (%s)' % (sensor_name, vtype, cmp_word, cvalue, ts)
+                print(msg)
+                send_message_retry(msg)
                 NOTIFIED.remove(idx)
                 
 
