@@ -15,16 +15,19 @@ def get_sensor_name(sensor_id):
     else:
         return None
 
+
 def get_database():
-    db = create_engine(database, pool_recycle=6*3600)
+    db = create_engine(database, pool_recycle=6 * 3600)
     metadata = MetaData(db)
-    log = Table('sensor_log', metadata,
-                Column('sensor_id', Integer, primary_key=True, nullable=True),
-                Column('sensor_name', String(128)),
-                Column('timestamp', DateTime, primary_key=True),
-                Column('temperature', Float),
-                Column('humidity', Float),
-                )
+    log = Table(
+        'sensor_log',
+        metadata,
+        Column('sensor_id', Integer, primary_key=True, nullable=True),
+        Column('sensor_name', String(128)),
+        Column('timestamp', DateTime, primary_key=True),
+        Column('temperature', Float),
+        Column('humidity', Float),
+    )
     try:
         log.create()
     except (OperationalError, InternalError):
@@ -54,16 +57,23 @@ def get_latest_values(tz_name=None, would_be=False):
             would_be_hum = transpose_humidity(latest_values[0][3], latest_values[0][4], row.temperature)
         else:
             would_be_hum = None
-        latest_values.append((sensor_id, sensor_name, timestamp, row.temperature,
-                              row.humidity, would_be_hum, old_value))
+        latest_values.append(
+            (sensor_id, sensor_name, timestamp, row.temperature, row.humidity, would_be_hum, old_value)
+        )
     return latest_values
+
 
 def get_day_mean_values(sensor_id, day, log=None):
     if log is None:
         log = get_database()
     begin = datetime(day.year, day.month, day.day, 0, 0)
     end = datetime(day.year, day.month, day.day, 23, 59)
-    query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp >= begin).where(log.c.timestamp <= end)
+    query = (
+        log.select()
+        .where(log.c.sensor_id == int(sensor_id))
+        .where(log.c.timestamp >= begin)
+        .where(log.c.timestamp <= end)
+    )
     ts = list()
     hs = list()
     for row in query.execute().fetchall():
@@ -74,6 +84,7 @@ def get_day_mean_values(sensor_id, day, log=None):
     t_mean = numpy.mean(ts)
     h_mean = numpy.mean(hs)
     return begin, t_mean, h_mean
+
 
 def get_timespan_mean_values(begin, end):
     result = dict()
@@ -86,6 +97,7 @@ def get_timespan_mean_values(begin, end):
             current += timedelta(days=1)
     return result
 
+
 def transpose_humidity(input_t, input_h, target_t):
     '''
     input_t: outsite temperature in C
@@ -95,9 +107,9 @@ def transpose_humidity(input_t, input_h, target_t):
     '''
     Rv = 461.5
     t0 = input_t + 273.15
-    p = 1024.0 # hPa
+    p = 1024.0  # hPa
     ew0 = 6.112 * exp((17.62 * input_t) / (243.12 + input_t))
-    fp = 1.0016 + 3.15 * 10**-6 * p - 0.074 * p**-1
+    fp = 1.0016 + 3.15 * 10 ** -6 * p - 0.074 * p ** -1
     ew01 = fp * ew0 * 100
     e0 = ew01 * (input_h / 100)
     AH = e0 / (Rv * t0)
@@ -109,7 +121,3 @@ def transpose_humidity(input_t, input_h, target_t):
     target_h = 100 * e1 / ew11
 
     return target_h
-
-
-    
-

@@ -5,11 +5,7 @@ device = '/dev/ttyS0'
 database = 'sqlite:///sensor_log.db'
 
 # sensor name mapping
-sensor_map = {
-    '1': 'Sensor 1',
-    '2': 'Sensor 2',
-    '3': 'Sensor 3',
-}
+sensor_map = {'1': 'Sensor 1', '2': 'Sensor 2', '3': 'Sensor 3'}
 
 # timezone shown in webgui
 timezone = 'CET'
@@ -27,5 +23,4 @@ pa_user_key = ''
 # list of tuples: (sensor_id, [t or h], value, [+ or -] (for above or below)
 # example (1, 't', 28.0, '+')
 # alert at temperature over 28.0 at sensor 1
-notification_constraints = [
-]
+notification_constraints = []

@@ -6,6 +6,7 @@ from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
 from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values
 from settings import sensor_map, timezone
+
 app = Flask(__name__)
 
 
@@ -22,8 +23,8 @@ def main(filter_sensor_id=None):
     count = log.select()
     count = select_stm([func.count()]).select_from(log)
     if filter_sensor_id:
-        select = select.where(log.c.sensor_id==int(filter_sensor_id))
-        count = count.where(log.c.sensor_id==int(filter_sensor_id))
+        select = select.where(log.c.sensor_id == int(filter_sensor_id))
+        count = count.where(log.c.sensor_id == int(filter_sensor_id))
     if page != 'all':
         count = count.execute().fetchone()[0]
         maxpages = count // pagesize
@@ -35,16 +36,16 @@ def main(filter_sensor_id=None):
     result = list()
     for row in rows.fetchall():
         entry = dict(
-            sensor_id = row.sensor_id,
-            sensor_name = row.sensor_name,
-            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%d.%m.%Y %H:%M:%S'),
-            temperature = row.temperature,
-            humidity = row.humidity,
+            sensor_id=row.sensor_id,
+            sensor_name=row.sensor_name,
+            timestamp=pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%d.%m.%Y %H:%M:%S'),
+            temperature=row.temperature,
+            humidity=row.humidity,
         )
         result.append(entry)
-    return render_template('table.html', result=result, sensor_name=get_sensor_name(filter_sensor_id),
-                           page=page, maxpages=maxpages)
-
+    return render_template(
+        'table.html', result=result, sensor_name=get_sensor_name(filter_sensor_id), page=page, maxpages=maxpages
+    )
 
 
 @app.route('/plots')
@@ -127,7 +128,7 @@ def api_latest():
 
 @app.route('/favicon.ico')
 def favicon():
-    abort(404)    
+    abort(404)
 
 
 with app.test_request_context():
@@ -136,4 +137,3 @@ with app.test_request_context():
 
 if __name__ == '__main__':
     app.run()
-

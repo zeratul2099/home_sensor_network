@@ -21,12 +21,11 @@ def main():
 
     log = get_database()
     insert = log.insert()
-    insert.execute(sensor_id=0, sensor_name='Outside',
-                   timestamp=timestamp, temperature=temperature,
-                   humidity=humidity)
+    insert.execute(sensor_id=0, sensor_name='Outside', timestamp=timestamp, temperature=temperature, humidity=humidity)
 
     with open('weatherdump.pkl', 'wb') as dumpfile:
         pickle.dump(result, dumpfile)
+
 
 if __name__ == '__main__':
     main()
