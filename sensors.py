@@ -2,6 +2,7 @@
 import socket
 from datetime import datetime
 import serial
+import time
 
 import requests
 
@@ -21,7 +22,7 @@ def send_message_retry(message, retries=3):
             )
             print(r.text)
             break
-        except socket.gaierror:
+        except (socket.gaierror, requests.exceptions.ConnectionError):
             print('retry')
             time.sleep(1)
             continue
