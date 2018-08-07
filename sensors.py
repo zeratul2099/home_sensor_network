@@ -83,8 +83,10 @@ def main():
         insert.execute(
             sensor_id=sensor_id, sensor_name=sensor, timestamp=now, temperature=temperature, humidity=humidity
         )
-        check_notification(sensor_id, 't', temperature, now)
-        check_notification(sensor_id, 'h', humidity, now)
+        if temperature is not None:
+            check_notification(sensor_id, 't', temperature, now)
+        if humidity is not None:
+            check_notification(sensor_id, 'h', humidity, now)
 
 
 if __name__ == '__main__':
