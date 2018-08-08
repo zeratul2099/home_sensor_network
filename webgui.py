@@ -19,7 +19,7 @@ def main(filter_sensor_id=None):
     pagesize = 50
     tz = pytz.timezone(timezone)
     log = get_database()
-    select = log.select().order_by(desc(log.c.timestamp))
+    select = log.select().where(log.c.temperature != None).where(log.c.humidity != None).order_by(desc(log.c.timestamp))
     count = log.select()
     count = select_stm([func.count()]).select_from(log)
     if filter_sensor_id:
