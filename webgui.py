@@ -125,7 +125,7 @@ def api_latest():
     latest_values = get_latest_values(request.args.get('tz'))
     return jsonify(*latest_values)
 
-@app.route('api/send')
+@app.route('/api/send')
 def api_send():
     try:
         sensor_id = int(request.args.get('id'))
