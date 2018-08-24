@@ -4,7 +4,7 @@ import pickle
 import pytz
 from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
-from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values
+from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values, check_notification
 from settings import sensor_map, timezone
 
 app = Flask(__name__)
@@ -125,6 +125,23 @@ def api_latest():
     latest_values = get_latest_values(request.args.get('tz'))
     return jsonify(*latest_values)
 
+@app.route('api/send')
+def api_send():
+    try:
+        sensor_id = int(request.args.get('id'))
+        temp = float(request.args.get('t'))
+        hum = float(request.args.get('h'))
+    except ValueError:
+        raise Exception('invalid values in %s' % request.args)
+        
+    sensor_name = get_sensor_name(sensor_id)
+    log = get_database()
+    now = datetime.utcnow()
+    insert = log.insert()
+    insert.execute(sensor_id=sensor_id, sensor_name=sensor_name, timestamp=now, temperature=temp, humidity=hum)
+    check_notification(sensor_id, 't', temp, now)
+    check_notification(sensor_id, 'h', hum, now)
+    
 
 @app.route('/favicon.ico')
 def favicon():

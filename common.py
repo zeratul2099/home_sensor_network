@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, 
 from sqlalchemy.exc import OperationalError, InternalError
 import pytz
 
-from settings import database, sensor_map
+from settings import database, sensor_map, pa_app_token, pa_user_key, notification_constraints
 
 
 def get_sensor_name(sensor_id):
@@ -121,3 +121,40 @@ def transpose_humidity(input_t, input_h, target_t):
     target_h = 100 * e1 / ew11
 
     return target_h
+
+def send_message_retry(message, retries=3):
+
+    for retry in range(retries):
+        try:
+            r = requests.post(
+                'https://api.pushover.net/1/messages.json',
+                data={'token': pa_app_token, 'user': pa_user_key, 'message': message},
+            )
+            print(r.text)
+            break
+        except (socket.gaierror, requests.exceptions.ConnectionError):
+            print('retry')
+            time.sleep(1)
+            continue
+
+
+def check_notification(sensor, vtype, value, ts):
+    global NOTIFIED
+    for idx, (csensor, ctype, cvalue, cmp) in enumerate(notification_constraints):
+        if sensor == csensor and ctype == vtype:
+            sensor_name = get_sensor_name(str(sensor))
+            if idx not in NOTIFIED:
+                if (cmp == '+' and value > cvalue) or (cmp == '-' and value < cvalue):
+                    # notify
+                    cmp_word = 'over' if cmp == '+' else 'below'
+                    msg = '%s: %s is %s limit of %s (%s)' % (sensor_name, vtype, cmp_word, cvalue, ts)
+                    print(msg)
+                    send_message_retry(msg)
+                    NOTIFIED.add(idx)
+            elif (cmp == '+' and value < cvalue) or (cmp == '-' and value > cvalue):
+                cmp_word = 'below' if cmp == '+' else 'over'
+                msg = '%s all clear: %s is %s limit of %s again (%s)' % (sensor_name, vtype, cmp_word, cvalue, ts)
+                print(msg)
+                send_message_retry(msg)
+                NOTIFIED.remove(idx)
+
