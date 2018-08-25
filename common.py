@@ -8,6 +8,7 @@ import pytz
 
 from settings import database, sensor_map, pa_app_token, pa_user_key, notification_constraints
 
+NOTIFIED = set()
 
 def get_sensor_name(sensor_id):
     if sensor_id:

@@ -9,9 +9,6 @@ import requests
 from common import get_database, get_sensor_name, check_notification
 from settings import device
 
-NOTIFIED = set()
-
-
 
 def main():
     print('Listening to %s...' % device)

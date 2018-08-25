@@ -128,7 +128,7 @@ def api_latest():
 @app.route('/api/send')
 def api_send():
     try:
-        sensor_id = int(request.args.get('id'))
+        sensor_id = request.args.get('id')
         temp = float(request.args.get('t'))
         hum = float(request.args.get('h'))
     except ValueError:
@@ -141,6 +141,7 @@ def api_send():
     insert.execute(sensor_id=sensor_id, sensor_name=sensor_name, timestamp=now, temperature=temp, humidity=hum)
     check_notification(sensor_id, 't', temp, now)
     check_notification(sensor_id, 'h', hum, now)
+    return jsonify('OK')
     
 
 @app.route('/favicon.ico')
