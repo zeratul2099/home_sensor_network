@@ -5,6 +5,7 @@ import numpy
 from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, Float, DateTime, desc
 from sqlalchemy.exc import OperationalError, InternalError
 import pytz
+import requests
 
 from settings import database, sensor_map, pa_app_token, pa_user_key, notification_constraints
 
