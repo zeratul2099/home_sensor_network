@@ -48,7 +48,10 @@ def get_latest_values(tz_name=None, would_be=False):
     latest_values = list()
     for sensor_id, sensor_name in sorted(sensor_map.items()):
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.temperature != None).where(log.c.humidity != None).order_by(desc(log.c.timestamp)).limit(1)
-        row = query.execute().fetchall()[0]
+        try:
+            row = query.execute().fetchall()[0]
+        except IndexError:
+            continue
         if row.timestamp < datetime.utcnow() - timedelta(hours=2):
             old_value = True
         else:
