@@ -139,8 +139,8 @@ def api_send():
     now = datetime.utcnow()
     insert = log.insert()
     insert.execute(sensor_id=sensor_id, sensor_name=sensor_name, timestamp=now, temperature=temp, humidity=hum)
-    check_notification(sensor_id, 't', temp, now)
-    check_notification(sensor_id, 'h', hum, now)
+    check_notification(int(sensor_id), 't', temp, now)
+    check_notification(int(sensor_id), 'h', hum, now)
     return jsonify('OK')
     
 
