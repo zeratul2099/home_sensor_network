@@ -156,7 +156,7 @@ def check_notification(sensor, vtype, value, ts):
                     print(msg)
                     send_message_retry(msg)
                     NOTIFIED.add(idx)
-            elif (cmp == '+' and value < cvalue) or (cmp == '-' and value > cvalue):
+            elif (cmp == '+' and value < cvalue - 0.5) or (cmp == '-' and value > cvalue + 0.5):
                 cmp_word = 'below' if cmp == '+' else 'over'
                 msg = '%s all clear: %s is %s limit of %s again (%s)' % (sensor_name, vtype, cmp_word, cvalue, ts)
                 print(msg)
