@@ -15,7 +15,11 @@ def main():
     log = get_database()
     while True:
         ser = serial.Serial(device, 9600)
-        line = ser.readline().decode('utf8').strip()
+        try:
+            line = ser.readline().decode('utf8').strip()
+        except UnicodeDecodeError:
+            print('UnicodeDecodeError')
+            continue
         print('Received input: ' + line)
         keys = line.split(':')[0::2]
         values = line.split(':')[1::2]
