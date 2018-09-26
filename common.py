@@ -96,7 +96,7 @@ def get_day_mean_values(sensor_id, day, log=None):
 def get_timespan_mean_values(begin, end):
     result = dict()
     log = get_database()
-    for sensor_id, sensor_name in sensor_map.items():
+    for sensor_id, sensor_name in settings['sensor_map'].items():
         current = begin
         while current <= end:
             day, t, h = get_day_mean_values(sensor_id, current, log=log)

@@ -90,6 +90,7 @@ ENV/
 
 # settings file
 settings.py
+settings.yaml
 
 # storage file
 *.db

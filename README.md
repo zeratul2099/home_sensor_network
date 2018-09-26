@@ -20,6 +20,7 @@ Dependencies:
  - requests
  - numpy
  - requests
+ - pyyaml
 
 External libraries:
  - jquery: https://jquery.org/license
