@@ -4,8 +4,7 @@ import pickle
 import pytz
 from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
-from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values, check_notification
-from settings import sensor_map, timezone
+from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values, check_notification, settings
 
 app = Flask(__name__)
 
@@ -17,7 +16,7 @@ def main(filter_sensor_id=None):
     if page is None:
         page = '0'
     pagesize = 50
-    tz = pytz.timezone(timezone)
+    tz = pytz.timezone(settings['timezone'])
     log = get_database()
     select = log.select().where(log.c.temperature != None).where(log.c.humidity != None).order_by(desc(log.c.timestamp))
     count = log.select()
@@ -50,19 +49,19 @@ def main(filter_sensor_id=None):
 
 @app.route('/plots')
 def plots():
-    return render_template('plots.html', timezone=timezone)
+    return render_template('plots.html', timezone=settings['timezone'])
 
 
 @app.route('/gauges')
 def gauges():
-    return render_template('gauges.html', sensor_map=sensor_map, timezone=timezone)
+    return render_template('gauges.html', sensor_map=settings['sensor_map'], timezone=settings['timezone'])
 
 
 @app.route('/weather')
 def weather():
     with open('weatherdump.pkl', 'rb') as dumpfile:
         conditions = pickle.load(dumpfile)
-    tz = pytz.timezone(timezone)
+    tz = pytz.timezone(settings['timezone'])
     timestamp = datetime.utcfromtimestamp(conditions['currently']['time'])
     timestamp = pytz.utc.localize(timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')
     return render_template('weather.html', conditions=conditions, timestamp=timestamp)
@@ -74,7 +73,7 @@ def simple():
         would_be = True
     else:
         would_be = False
-    latest_values = get_latest_values(timezone, would_be=would_be)
+    latest_values = get_latest_values(settings['timezone'], would_be=would_be)
     return render_template('simple.html', latest_values=latest_values)
 
 
@@ -107,7 +106,7 @@ def api_history():
     temperatures = dict()
     humidities = dict()
     history = list()
-    for sensor_id, sensor_name in sorted(sensor_map.items()):
+    for sensor_id, sensor_name in sorted(settings['sensor_map'].items()):
         history.append((sensor_id, sensor_name, list()))
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():

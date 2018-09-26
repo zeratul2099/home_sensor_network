@@ -6,20 +6,22 @@ from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer, 
 from sqlalchemy.exc import OperationalError, InternalError
 import pytz
 import requests
+import yaml
 
-from settings import database, sensor_map, pa_app_token, pa_user_key, notification_constraints
+with open('settings.yaml') as settings_file:
+    settings = yaml.load(settings_file)
 
 NOTIFIED = set()
 
 def get_sensor_name(sensor_id):
     if sensor_id:
-        return sensor_map.get(sensor_id, 'DeviceID' + sensor_id)
+        return settings['sensor_map'].get(sensor_id, 'DeviceID' + sensor_id)
     else:
         return None
 
 
 def get_database():
-    db = create_engine(database, pool_recycle=6 * 3600)
+    db = create_engine(settings['database'], pool_recycle=6 * 3600)
     metadata = MetaData(db)
     log = Table(
         'sensor_log',
@@ -46,7 +48,7 @@ def get_latest_values(tz_name=None, would_be=False):
     else:
         tz = pytz.timezone(tz_name)
     latest_values = list()
-    for sensor_id, sensor_name in sorted(sensor_map.items()):
+    for sensor_id, sensor_name in sorted(settings['sensor_map'].items()):
         query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.temperature != None).where(log.c.humidity != None).order_by(desc(log.c.timestamp)).limit(1)
         try:
             row = query.execute().fetchall()[0]
@@ -133,7 +135,7 @@ def send_message_retry(message, retries=3):
         try:
             r = requests.post(
                 'https://api.pushover.net/1/messages.json',
-                data={'token': pa_app_token, 'user': pa_user_key, 'message': message},
+                data={'token': settings['pa_app_token'], 'user': settings['pa_user_key'], 'message': message},
             )
             print(r.text)
             break
@@ -145,7 +147,7 @@ def send_message_retry(message, retries=3):
 
 def check_notification(sensor, vtype, value, ts):
     global NOTIFIED
-    for idx, (csensor, ctype, cvalue, cmp) in enumerate(notification_constraints):
+    for idx, (csensor, ctype, cvalue, cmp) in enumerate(settings['notification_constraints']):
         if sensor == csensor and ctype == vtype:
             sensor_name = get_sensor_name(str(sensor))
             if idx not in NOTIFIED:

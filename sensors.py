@@ -6,15 +6,14 @@ import time
 
 import requests
 
-from common import get_database, get_sensor_name, check_notification
-from settings import device
+from common import get_database, get_sensor_name, check_notification, settings
 
 
 def main():
-    print('Listening to %s...' % device)
+    print('Listening to %s...' % settings['device'])
     log = get_database()
     while True:
-        ser = serial.Serial(device, 9600)
+        ser = serial.Serial(settings['device'], 9600)
         try:
             line = ser.readline().decode('utf8').strip()
         except UnicodeDecodeError:
