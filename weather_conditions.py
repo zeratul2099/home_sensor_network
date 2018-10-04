@@ -1,7 +1,5 @@
 from datetime import datetime
-import pickle
 
-import pytz
 import requests
 
 from common import get_database, settings
@@ -22,8 +20,8 @@ def main():
     insert = log.insert()
     insert.execute(sensor_id=0, sensor_name='Outside', timestamp=timestamp, temperature=temperature, humidity=humidity)
 
-    with open('weatherdump.pkl', 'wb') as dumpfile:
-        pickle.dump(result, dumpfile)
+    with open('weatherdump.json', 'w') as dumpfile:
+        dumpfile.write(response.text)
 
 
 if __name__ == '__main__':

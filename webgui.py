@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-import pickle
+import json
 
 import pytz
 from flask import Flask, url_for, render_template, request, abort, jsonify
@@ -59,8 +59,8 @@ def gauges():
 
 @app.route('/weather')
 def weather():
-    with open('weatherdump.pkl', 'rb') as dumpfile:
-        conditions = pickle.load(dumpfile)
+    with open('weatherdump.json', 'r') as dumpfile:
+        conditions = json.load(dumpfile)
     tz = pytz.timezone(settings['timezone'])
     timestamp = datetime.utcfromtimestamp(conditions['currently']['time'])
     timestamp = pytz.utc.localize(timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')
