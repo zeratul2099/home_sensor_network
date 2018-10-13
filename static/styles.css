@@ -4,7 +4,6 @@ body
 	padding:0;
         font-family:monospace;
         background:#F5F5F5;
-	background-image: url('/content/plast01.jpg');
       	/*background: -webkit-gradient(linear, left top, right top, from(#f0f0f0), to(#fcfcfc));
 	background: -moz-linear-gradient(left, #f0f0f0, #fcfcfc );*/
 		}
