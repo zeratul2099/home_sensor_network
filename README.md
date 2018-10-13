@@ -22,7 +22,4 @@ Dependencies:
  - requests
  - pyyaml
 
-External libraries:
- - jquery: https://jquery.org/license
- - jqplot: https://jqplot.com/info.php
 
