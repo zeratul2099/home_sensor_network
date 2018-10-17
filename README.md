@@ -1,5 +1,7 @@
 # home_sensor_network
 
+[![Build Status](https://travis-ci.com/zeratul2099/home_sensor_network.svg?branch=master)](https://travis-ci.com/zeratul2099/home_sensor_network)
+
 python component for a Raspberry Pi/Arduino-driven wireless sensor network for temperature and humidity which is described here:
 
 https://computers.tutsplus.com/tutorials/building-a-wireless-sensor-network-in-your-home--cms-19745
@@ -13,13 +15,6 @@ Optionally you can define constraints (e.g. a maximum temperature per sensor) an
 constraints are violated.
 
 Dependencies:
- - python3
- - sqlalchemy
- - flask
- - pytz
- - requests
- - numpy
- - requests
- - pyyaml
+    - see requirements.txt
 
 
