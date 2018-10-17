@@ -2,12 +2,12 @@ from datetime import datetime
 
 import requests
 
-from common import get_database, settings
+from common import get_database, SETTINGS
 
 
 def main():
     url = 'https://api.darksky.net/forecast/%s/%s,%s?exclude=minutely,hourly,daily,alerts,flags&units=si'
-    url = url % (settings['darksky_api_key'], settings['lat_lon'][0], settings['lat_lon'][1])
+    url = url % (SETTINGS['darksky_api_key'], SETTINGS['lat_lon'][0], SETTINGS['lat_lon'][1])
     response = requests.get(url)
     result = response.json()
     current_conditions = result['currently']
