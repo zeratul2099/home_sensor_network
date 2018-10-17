@@ -4,9 +4,16 @@ import json
 import pytz
 from flask import Flask, url_for, render_template, request, abort, jsonify
 from sqlalchemy import desc, func, select as select_stm
-from common import get_database, get_sensor_name, get_latest_values, get_timespan_mean_values, check_notification, SETTINGS
+from common import (
+    get_database,
+    get_sensor_name,
+    get_latest_values,
+    get_timespan_mean_values,
+    check_notification,
+    SETTINGS
+)
 
-app = Flask(__name__)
+app = Flask(__name__) # pylint: disable=invalid-name
 
 
 @app.route('/')
@@ -16,9 +23,12 @@ def main(filter_sensor_id=None):
     if page is None:
         page = '0'
     pagesize = 50
-    tz = pytz.timezone(SETTINGS['timezone'])
+    timezone = pytz.timezone(SETTINGS['timezone'])
     log = get_database()
-    select = log.select().where(log.c.temperature != None).where(log.c.humidity != None).order_by(desc(log.c.timestamp))
+    select = log.select()\
+        .where(log.c.temperature.isnot(None))\
+        .where(log.c.humidity.isnot(None))\
+        .order_by(desc(log.c.timestamp))
     count = log.select()
     count = select_stm([func.count()]).select_from(log)
     if filter_sensor_id:
@@ -37,13 +47,18 @@ def main(filter_sensor_id=None):
         entry = dict(
             sensor_id=row.sensor_id,
             sensor_name=row.sensor_name,
-            timestamp=pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%d.%m.%Y %H:%M:%S'),
+            timestamp=pytz.utc.localize(row.timestamp).\
+                astimezone(timezone).strftime('%d.%m.%Y %H:%M:%S'),
             temperature=row.temperature,
             humidity=row.humidity,
         )
         result.append(entry)
     return render_template(
-        'table.html', result=result, sensor_name=get_sensor_name(filter_sensor_id), page=page, maxpages=maxpages
+        'table.html',
+        result=result,
+        sensor_name=get_sensor_name(filter_sensor_id),
+        page=page,
+        maxpages=maxpages
     )
 
 
@@ -54,25 +69,26 @@ def plots():
 
 @app.route('/gauges')
 def gauges():
-    return render_template('gauges.html', sensor_map=SETTINGS['sensor_map'], timezone=SETTINGS['timezone'])
+    return render_template(
+        'gauges.html',
+        sensor_map=SETTINGS['sensor_map'],
+        timezone=SETTINGS['timezone']
+    )
 
 
 @app.route('/weather')
 def weather():
     with open('weatherdump.json', 'r') as dumpfile:
         conditions = json.load(dumpfile)
-    tz = pytz.timezone(SETTINGS['timezone'])
+    timezone = pytz.timezone(SETTINGS['timezone'])
     timestamp = datetime.utcfromtimestamp(conditions['currently']['time'])
-    timestamp = pytz.utc.localize(timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')
+    timestamp = pytz.utc.localize(timestamp).astimezone(timezone).strftime('%Y-%m-%d %H:%M:%S')
     return render_template('weather.html', conditions=conditions, timestamp=timestamp)
 
 
 @app.route('/simple')
 def simple():
-    if request.args.get('wouldbe'):
-        would_be = True
-    else:
-        would_be = False
+    would_be = bool(request.args.get('wouldbe'))
     latest_values = get_latest_values(SETTINGS['timezone'], would_be=would_be)
     return render_template('simple.html', latest_values=latest_values)
 
@@ -99,18 +115,18 @@ def api_history():
 
     tz_name = request.args.get('tz')
     if tz_name is None:
-        tz = pytz.utc
+        timezone = pytz.utc
     else:
-        tz = pytz.timezone(tz_name)
+        timezone = pytz.timezone(tz_name)
     now = datetime.utcnow()
-    temperatures = dict()
-    humidities = dict()
     history = list()
     for sensor_id, sensor_name in sorted(SETTINGS['sensor_map'].items()):
         history.append((sensor_id, sensor_name, list()))
-        query = log.select().where(log.c.sensor_id == int(sensor_id)).where(log.c.timestamp > now - timedelta(days=1))
+        query = log.select().where(log.c.sensor_id == int(sensor_id))\
+            .where(log.c.timestamp > now - timedelta(days=1))
         for row in query.execute().fetchall():
-            timestamp = pytz.utc.localize(row.timestamp).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = pytz.utc.localize(row.timestamp)\
+                .astimezone(timezone).strftime('%Y-%m-%d %H:%M:%S')
             if vtype == 't':
                 value = row.temperature
             elif vtype == 'h':
@@ -132,16 +148,21 @@ def api_send():
         hum = float(request.args.get('h'))
     except ValueError:
         raise Exception('invalid values in %s' % request.args)
-        
+
     sensor_name = get_sensor_name(sensor_id)
     log = get_database()
     now = datetime.utcnow()
-    insert = log.insert()
-    insert.execute(sensor_id=sensor_id, sensor_name=sensor_name, timestamp=now, temperature=temp, humidity=hum)
+    insert = log.insert() # pylint: disable=no-value-for-parameter
+    insert.execute(
+        sensor_id=sensor_id,
+        sensor_name=sensor_name,
+        timestamp=now,
+        temperature=temp,
+        humidity=hum
+    )
     check_notification(int(sensor_id), 't', temp, now)
     check_notification(int(sensor_id), 'h', hum, now)
     return jsonify('OK')
-    
 
 @app.route('/favicon.ico')
 def favicon():

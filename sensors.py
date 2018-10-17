@@ -1,10 +1,7 @@
 #!/usr/bin/python
-import socket
 from datetime import datetime
 import serial
-import time
 
-import requests
 
 from common import get_database, get_sensor_name, check_notification, SETTINGS
 
@@ -31,8 +28,12 @@ def main():
         sensor = get_sensor_name(value_dict['ID'])
         now = datetime.utcnow()
         print(
-            '%s: Sensor: %s, Temperature: %s, Humidity: %s'
-            % (now.strftime('%Y-%m-%d %H:%M:%S'), sensor, value_dict.get('TC', 'NaN'), value_dict.get('RH', 'NaN'))
+            '%s: Sensor: %s, Temperature: %s, Humidity: %s' % (
+                now.strftime('%Y-%m-%d %H:%M:%S'),
+                sensor,
+                value_dict.get('TC', 'NaN'),
+                value_dict.get('RH', 'NaN')
+            )
         )
         try:
             temperature = float(value_dict['TC'])
@@ -42,10 +43,14 @@ def main():
             humidity = float(value_dict['RH'].strip('%'))
         except (ValueError, KeyError):
             humidity = None
-        insert = log.insert()
+        insert = log.insert() # pylint: disable=no-value-for-parameter
         sensor_id = int(value_dict['ID'])
         insert.execute(
-            sensor_id=sensor_id, sensor_name=sensor, timestamp=now, temperature=temperature, humidity=humidity
+            sensor_id=sensor_id,
+            sensor_name=sensor,
+            timestamp=now,
+            temperature=temperature,
+            humidity=humidity
         )
         if temperature is not None:
             check_notification(sensor_id, 't', temperature, now)
