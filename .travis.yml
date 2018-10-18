@@ -11,6 +11,5 @@ install:
     - "pip install pylint"
 
 script:
-    - "pipenv shell"
-    - "python -m py_compile *.py"
-    - "pylint *.py -f colorized"
+    - "pipenv run python -m py_compile *.py"
+    - "pipenv run pylint *.py -f colorized"
