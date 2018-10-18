@@ -14,7 +14,8 @@ to get an Darksky-API-Key and enter it with your geolocation in the settings and
 Optionally you can define constraints (e.g. a maximum temperature per sensor) and get a notification over pushover.net if one of these
 constraints are violated.
 
-Dependencies:
-    - see requirements.txt
+Installation:
+    - pip install pipenv
+    - pipenv install
 
 
