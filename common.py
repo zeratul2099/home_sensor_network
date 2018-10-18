@@ -26,7 +26,6 @@ with open('settings.yaml') as settings_file:
 
 NOTIFIED = set()
 
-# pylint: disable=inconsistent-return-statements
 def get_sensor_name(sensor_id):
     if sensor_id:
         return SETTINGS['sensor_map'].get(sensor_id, 'DeviceID' + sensor_id)
@@ -182,15 +181,29 @@ def check_notification(sensor, vtype, value, timestamp):
                 if (cmp == '+' and value > cvalue) or (cmp == '-' and value < cvalue):
                     # notify
                     cmp_word = 'over' if cmp == '+' else 'below'
-                    msg = \
-                        f'{sensor_name}: {vtype} is {cmp_word} limit of %s ({timestamp})'
+                    msg = '{sensor_name}: {vtype} is {cmp_word} limit of {cvalue} ({timestamp})'\
+                        .format(
+                            sensor_name=sensor_name,
+                            vtype=type,
+                            cmp_word=cmp_word,
+                            cvalue=cvalue,
+                            timestamp=timestamp
+                        )
+
                     print(msg)
                     send_message_retry(msg)
                     NOTIFIED.add(idx)
             elif (cmp == '+' and value < cvalue - 0.5) or (cmp == '-' and value > cvalue + 0.5):
                 cmp_word = 'below' if cmp == '+' else 'over'
-                msg = f'{sensor_name} all clear: {vtype} is '\
-                    '{cmp_word} limit of {cvalue} again ({timestamp})'
+                msg = '{sensor_name} all clear: {vtype} is '\
+                    '{cmp_word} limit of {cvalue} again ({timestamp})'\
+                        .format(
+                            sensor_name=sensor_name,
+                            vtype=type,
+                            cmp_word=cmp_word,
+                            cvalue=cvalue,
+                            timestamp=timestamp
+                        )
                 print(msg)
                 send_message_retry(msg)
                 NOTIFIED.remove(idx)
