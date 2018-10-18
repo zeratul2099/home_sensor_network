@@ -1,13 +1,16 @@
 language: python
 python:
     - "3.5"
-    - "3.6"
-    - "3.7"
+#    - "3.6"
+
+cache: pip
 
 install:
-    - "pip install -r requirements.txt"
+    - "pip install pipenv"
+    - "pipenv install"
     - "pip install pylint"
 
 script:
+    - "pipenv shell"
     - "python -m py_compile *.py"
     - "pylint *.py -f colorized"
