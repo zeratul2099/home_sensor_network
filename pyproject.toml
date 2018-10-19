@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "home_sensor_network"
+version = "0.1.1"
+description = "Python component for a Raspberry Pi/Arduino-driven wireless sensor network for temperature and humidity"
+authors = ["Marko <zeratul@posteo.de>"]
+license = "GPL-3.0"
+
+[tool.poetry.dependencies]
+python = "^3.5"
+pytz = "^2018.5"
+sqlalchemy = "^1.2"
+flask = "^1.0"
+numpy = "^1.15"
+requests = "^2.20"
+pyserial = "^3.4"
+pyyaml = "^4.2-beta.2"
+
+[tool.poetry.dev-dependencies]
+ipython = "^7.0"
+pylint = "^2.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

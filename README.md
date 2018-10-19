@@ -15,7 +15,7 @@ Optionally you can define constraints (e.g. a maximum temperature per sensor) an
 constraints are violated.
 
 Installation:
-    - pip install pipenv
-    - pipenv install
+    - pip install poetry
+    - poetry install --no-dev
 
 
